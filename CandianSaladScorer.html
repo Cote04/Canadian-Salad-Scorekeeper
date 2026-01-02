@@ -18,9 +18,7 @@
       --winner-glow: 0 0 0 2px rgba(52, 211, 153, 0.7);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -34,12 +32,11 @@
       max-width: 960px;
       margin: 0 auto;
       padding: 1rem 0.75rem 2.5rem;
+      padding-top: calc(1rem + env(safe-area-inset-top));
+      padding-bottom: calc(2.5rem + env(safe-area-inset-bottom));
     }
 
-    header {
-      text-align: center;
-      margin-bottom: 0.5rem;
-    }
+    header { text-align: center; margin-bottom: 0.5rem; }
 
     header h1 {
       margin: 0;
@@ -78,10 +75,7 @@
       align-items: center;
     }
 
-    .controls label {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
+    .controls label { font-size: 0.8rem; color: var(--text-muted); }
 
     .controls input[type="number"] {
       width: 4rem;
@@ -92,6 +86,7 @@
       color: var(--text-main);
       font-size: 0.9rem;
       text-align: center;
+      touch-action: manipulation;
     }
 
     button {
@@ -125,38 +120,19 @@
       box-shadow: none;
     }
 
-    button.small {
-      padding: 0.25rem 0.7rem;
-      font-size: 0.75rem;
-    }
+    button.small { padding: 0.25rem 0.7rem; font-size: 0.75rem; }
 
     button:active {
       transform: translateY(1px) scale(0.99);
       box-shadow: 0 4px 10px rgba(249,115,22,0.4);
     }
 
-    .hint {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      margin-top: 0.3rem;
-    }
-
-    .hidden {
-      display: none;
-    }
+    .hint { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.3rem; }
+    .hidden { display: none; }
 
     /* Settings section */
-    .settings-card-title {
-      font-size: 0.9rem;
-      font-weight: 700;
-      margin-bottom: 0.35rem;
-    }
-
-    .settings-subtitle {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      margin-bottom: 0.35rem;
-    }
+    .settings-card-title { font-size: 0.9rem; font-weight: 700; margin-bottom: 0.35rem; }
+    .settings-subtitle { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.35rem; }
 
     .settings-section {
       margin-bottom: 0.75rem;
@@ -166,11 +142,7 @@
       border: 1px solid rgba(31,41,55,0.8);
     }
 
-    .settings-section-title {
-      font-size: 0.8rem;
-      font-weight: 600;
-      margin-bottom: 0.35rem;
-    }
+    .settings-section-title { font-size: 0.8rem; font-weight: 600; margin-bottom: 0.35rem; }
 
     .settings-actions {
       display: flex;
@@ -205,14 +177,8 @@
       margin-top: 0.25rem;
     }
 
-    .settings-round-label {
-      color: var(--text-muted);
-    }
-
-    .settings-round-label span {
-      color: var(--text-main);
-      font-weight: 500;
-    }
+    .settings-round-label { color: var(--text-muted); }
+    .settings-round-label span { color: var(--text-main); font-weight: 500; }
 
     .settings-grid input[type="number"],
     .settings-grid input[type="text"] {
@@ -225,19 +191,11 @@
       background: rgba(15,23,42,0.95);
       color: var(--text-main);
       font-size: 0.75rem;
+      touch-action: manipulation;
     }
 
-    .settings-hint {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      margin-top: 0.35rem;
-    }
-
-    .settings-toggle-row {
-      display: flex;
-      justify-content: flex-end;
-      margin: 0.5rem 0;
-    }
+    .settings-hint { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.35rem; }
+    .settings-toggle-row { display: flex; justify-content: flex-end; margin: 0.5rem 0; }
 
     /* Score table */
     .table-wrapper {
@@ -259,7 +217,8 @@
       min-width: 520px;
     }
 
-    thead {
+    /* ✅ Sticky header (names stay visible while you scroll) */
+    thead th {
       position: sticky;
       top: 0;
       z-index: 10;
@@ -274,51 +233,29 @@
       font-size: 0.78rem;
     }
 
+    /* Sticky first column */
     th.round-header {
       text-align: left;
       width: 28%;
       position: sticky;
       left: 0;
-      z-index: 8;
+      z-index: 12; /* above sticky header cells */
       background: rgba(17,24,39,0.96);
       border-right: 1px solid rgba(31,41,55,0.9);
     }
 
-    th.round-header .round-title {
-      font-weight: 600;
-      font-size: 0.8rem;
-    }
+    th.round-header .round-title { font-weight: 600; font-size: 0.8rem; }
+    th.round-header .round-desc { font-size: 0.7rem; color: var(--text-muted); margin-top: 0.1rem; }
 
-    th.round-header .round-desc {
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      margin-top: 0.1rem;
-    }
+    .round-total { font-size: 0.7rem; margin-top: 0.15rem; color: var(--text-muted); }
+    .round-total.ok { color: #4ade80; font-weight: 600; }
+    .round-total.incomplete { color: #fbbf24; font-weight: 500; }
 
-    .round-total {
-      font-size: 0.7rem;
-      margin-top: 0.15rem;
-      color: var(--text-muted);
-    }
-
-    .round-total.ok {
-      color: #4ade80;
-      font-weight: 600;
-    }
-
-    .round-total.incomplete {
-      color: #fbbf24;
-      font-weight: 500;
-    }
-
-    th.player-header {
-      min-width: 90px;
-    }
+    th.player-header { min-width: 90px; }
 
     .player-header-inner {
-      background: linear-gradient(135deg, rgba(30,64,175,0.45), rgba(15,118,110,0.65));
       border-radius: 0.9rem;
-      padding: 0.2rem 0.35rem 0.25rem;
+      padding: 0.25rem 0.35rem 0.3rem;
       border: 1px solid rgba(148,163,184,0.5);
       position: relative;
       box-shadow: 0 8px 16px rgba(15,23,42,0.55);
@@ -335,16 +272,38 @@
         linear-gradient(#000 0 0) padding-box,
         linear-gradient(#000 0 0);
       -webkit-mask-composite: xor;
-              mask-composite: exclude;
+      mask-composite: exclude;
       opacity: 0.25;
       pointer-events: none;
     }
 
-    .player-header-inner .player-name {
+    .player-name {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
       font-size: 0.75rem;
       font-weight: 600;
       line-height: 1.1;
+      justify-content: center;
+      flex-wrap: wrap;
     }
+
+    /* ✅ Place badge */
+    .player-place {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.08rem 0.4rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.55);
+      background: rgba(15,23,42,0.75);
+      color: var(--text-main);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .player-name-text { font-weight: 600; }
 
     .player-header-inner .player-total {
       font-size: 0.95rem;
@@ -363,9 +322,7 @@
       opacity: 0.95;
     }
 
-    .player-header-inner.winner .player-total {
-      color: #bbf7d0;
-    }
+    .player-header-inner.winner .player-total { color: #bbf7d0; }
 
     .round-index {
       display: inline-flex;
@@ -395,6 +352,7 @@
       color: var(--text-main);
       padding: 0.25rem 0.3rem;
       font-size: 0.8rem;
+      touch-action: manipulation;
     }
 
     .cell-input input[type="number"]:focus {
@@ -402,16 +360,8 @@
       outline-offset: 1px;
     }
 
-    .cell-note {
-      font-size: 0.68rem;
-      color: var(--text-muted);
-      min-height: 0.9rem;
-    }
-
-    .cell-note.highlight {
-      color: #f97316;
-      font-weight: 600;
-    }
+    .cell-note { font-size: 0.68rem; color: var(--text-muted); min-height: 0.9rem; }
+    .cell-note.highlight { color: #f97316; font-weight: 600; }
 
     tfoot td {
       border-top: 1px solid rgba(148,163,184,0.35);
@@ -426,29 +376,12 @@
     }
 
     @media (max-width: 640px) {
-      header h1 {
-        font-size: 1.25rem;
-      }
-
-      .card {
-        padding: 0.7rem;
-      }
-
-      th, td {
-        padding: 0.3rem 0.35rem;
-      }
-
-      .cell-input input[type="number"] {
-        width: 3.4rem;
-      }
-
-      .settings-grid {
-        grid-template-columns: 1.2fr auto;
-      }
-
-      .settings-actions {
-        align-items: flex-start;
-      }
+      header h1 { font-size: 1.25rem; }
+      .card { padding: 0.7rem; }
+      th, td { padding: 0.3rem 0.35rem; }
+      .cell-input input[type="number"] { width: 3.4rem; }
+      .settings-grid { grid-template-columns: 1.2fr auto; }
+      .settings-actions { align-items: flex-start; }
     }
   </style>
 </head>
@@ -463,7 +396,7 @@
       <button id="toggleSettingsBtn" type="button" class="ghost small">Show Settings</button>
     </div>
 
-    <!-- SETTINGS SECTION (Players + Deck/Round limits + Rules toggles) -->
+    <!-- SETTINGS SECTION -->
     <section class="card hidden" id="settingsCard">
       <div class="settings-card-title">Settings</div>
       <div class="settings-subtitle">
@@ -498,7 +431,7 @@
         <div class="controls" style="margin-bottom:0.5rem;">
           <div class="controls-group">
             <span style="font-size:0.78rem;color:var(--text-muted);">
-              Defaults assume a 52-card deck. Card limits scale with number of decks.
+              Limits auto-adjust based on player count (deal size + any removed cards). You can still fine-tune below.
             </span>
           </div>
           <div class="settings-actions">
@@ -519,8 +452,8 @@
           <!-- Rows inserted dynamically -->
         </div>
 
-        <div class="settings-hint">
-          Defaults are “per deck” × number of decks. Changing decks recalculates limits; then you can fine-tune per round.
+        <div class="settings-hint" id="limitsHint">
+          Auto defaults consider: player count, deal size, and the standard card-removal rules.
         </div>
       </div>
 
@@ -549,9 +482,7 @@
               <!-- Player headers injected here -->
             </tr>
           </thead>
-          <tbody id="roundsBody">
-            <!-- Rounds injected here -->
-          </tbody>
+          <tbody id="roundsBody"></tbody>
           <tfoot>
             <tr>
               <td colspan="99">
@@ -584,12 +515,10 @@
                 <div class="round-title">Rule</div>
                 <div class="round-desc">Penalty per card/event</div>
               </th>
-              <!-- Player headers inserted here -->
+              <!-- Player headers injected here -->
             </tr>
           </thead>
-          <tbody id="allRulesBody">
-            <!-- Per-rule rows injected here -->
-          </tbody>
+          <tbody id="allRulesBody"></tbody>
         </table>
       </div>
     </section>
@@ -597,103 +526,27 @@
 
   <script>
     (function () {
-      const STORAGE_KEY = "canadianSaladScores_v9";
+      const STORAGE_KEY = "canadianSaladScores_v10";
 
-      // Rounds: defaultMaxCards is per-deck; maxCards is current total after deck scaling.
       const rounds = [
-        {
-          name: "No RED Cards",
-          description: "Each red card (♥ or ♦) = 5 pts",
-          pointsPerCard: 5,
-          defaultMaxCards: 26,
-          maxCards: 26
-        },
-        {
-          name: "No EVEN Cards",
-          description: "Each even-ranked card (2,4,6,8,10,Q) = 5 pts",
-          pointsPerCard: 5,
-          defaultMaxCards: 24,
-          maxCards: 24
-        },
-        {
-          name: "No Tricks",
-          description: "Each trick taken = 10 pts",
-          pointsPerCard: 10,
-          defaultMaxCards: 13,
-          maxCards: 13
-        },
-        {
-          name: "No HEARTS",
-          description: "Each ♥ = 10 pts",
-          pointsPerCard: 10,
-          defaultMaxCards: 13,
-          maxCards: 13
-        },
-        {
-          name: "No FACE Cards",
-          description: "Each J, Q, K = 10 pts",
-          pointsPerCard: 10,
-          defaultMaxCards: 12,
-          maxCards: 12
-        },
-        {
-          name: "No SEVENS",
-          description: "Each 7 = 30 pts",
-          pointsPerCard: 30,
-          defaultMaxCards: 4,
-          maxCards: 4
-        },
-        {
-          name: "No ACES",
-          description: "Each A = 30 pts",
-          pointsPerCard: 30,
-          defaultMaxCards: 4,
-          maxCards: 4
-        },
-        {
-          name: "No QUEENS",
-          description: "Each Q = 30 pts",
-          pointsPerCard: 30,
-          defaultMaxCards: 4,
-          maxCards: 4
-        },
-        {
-          name: "No One-Eyed / KD",
-          description: "Each J♠, J♥, or K♦ = 40 pts",
-          pointsPerCard: 40,
-          defaultMaxCards: 3,
-          maxCards: 3
-        },
-        {
-          name: "No KING of SPADES",
-          description: "If you took K♠, enter 1 = 75 pts",
-          pointsPerCard: 75,
-          defaultMaxCards: 1,
-          maxCards: 1
-        },
-        {
-          name: "No LAST TRICK",
-          description: "If you took last trick, enter 1 = 75 pts",
-          pointsPerCard: 75,
-          defaultMaxCards: 1,
-          maxCards: 1
-        },
-        {
-          name: "All of the Above (per-rule)",
-          description: "Totals from the All-of-the-Above details grid.",
-          pointsPerCard: null,
-          defaultMaxCards: null,
-          maxCards: null
-        }
+        { name: "No RED Cards", description: "Each red card (♥ or ♦) = 5 pts", pointsPerCard: 5, defaultMaxCards: 26, maxCards: 26 },
+        { name: "No EVEN Cards", description: "Each even-ranked card (2,4,6,8,10,Q) = 5 pts", pointsPerCard: 5, defaultMaxCards: 24, maxCards: 24 },
+        { name: "No Tricks", description: "Each trick taken = 10 pts", pointsPerCard: 10, defaultMaxCards: 13, maxCards: 13 },
+        { name: "No HEARTS", description: "Each ♥ = 10 pts", pointsPerCard: 10, defaultMaxCards: 13, maxCards: 13 },
+        { name: "No FACE Cards", description: "Each J, Q, K = 10 pts", pointsPerCard: 10, defaultMaxCards: 12, maxCards: 12 },
+        { name: "No SEVENS", description: "Each 7 = 30 pts", pointsPerCard: 30, defaultMaxCards: 4, maxCards: 4 },
+        { name: "No ACES", description: "Each A = 30 pts", pointsPerCard: 30, defaultMaxCards: 4, maxCards: 4 },
+        { name: "No QUEENS", description: "Each Q = 30 pts", pointsPerCard: 30, defaultMaxCards: 4, maxCards: 4 },
+        { name: "No One-Eyed / KD", description: "Each J♠, J♥, or K♦ = 40 pts", pointsPerCard: 40, defaultMaxCards: 3, maxCards: 3 },
+        { name: "No KING of SPADES", description: "If you took K♠, enter 1 = 75 pts", pointsPerCard: 75, defaultMaxCards: 1, maxCards: 1 },
+        { name: "No LAST TRICK", description: "If you took last trick, enter 1 = 75 pts", pointsPerCard: 75, defaultMaxCards: 1, maxCards: 1 },
+        { name: "All of the Above (per-rule)", description: "Totals from the All-of-the-Above details grid.", pointsPerCard: null, defaultMaxCards: null, maxCards: null }
       ];
 
-      const playerColors = [
-        "#f97316", "#22c55e", "#3b82f6", "#e11d48",
-        "#a855f7", "#14b8a6", "#eab308", "#f97373"
-      ];
+      const playerColors = ["#f97316", "#22c55e", "#3b82f6", "#e11d48", "#a855f7", "#14b8a6", "#eab308", "#f97373"];
 
-      // By default, all first 11 rules enabled; All-of-the-Above (index 11) always enabled
-      let includedRules = rounds.map((_, idx) => idx < rounds.length - 1 ? true : true);
+      // ✅ Simplified: all rules enabled by default (All-of-the-Above always shown)
+      let includedRules = rounds.map(() => true);
 
       const headerRow = document.getElementById("headerRow");
       const roundsBody = document.getElementById("roundsBody");
@@ -708,6 +561,7 @@
       const toggleSettingsBtn = document.getElementById("toggleSettingsBtn");
       const playerNamesContainer = document.getElementById("playerNamesContainer");
       const cardRemovalHint = document.getElementById("cardRemovalHint");
+      const limitsHint = document.getElementById("limitsHint");
 
       const allDetailsCard = document.getElementById("allDetailsCard");
       const toggleAllDetailsBtn = document.getElementById("toggleAllDetailsBtn");
@@ -717,6 +571,159 @@
 
       let playerCount = 4;
       let deckCount = 1;
+
+      /* ---------------------- Player Count Presets & Limit Math ---------------------- */
+
+      const EVEN_RANKS = new Set(["2","4","6","8","10","Q"]);
+      const FACE_RANKS = new Set(["J","Q","K"]);
+
+      function getPlayerPreset(pc) {
+        // Returns recommended decks, cards per player, and removal rules (standard house rules you listed).
+        if (pc === 3) return { recommendedDecks: 1, cardsPerPlayer: 13, removedSuitInstances: [{ suit: "C", instances: 1 }], removedSpecificCards: [] };
+        if (pc === 4) return { recommendedDecks: 1, cardsPerPlayer: 13, removedSuitInstances: [], removedSpecificCards: [] };
+        if (pc === 5) return { recommendedDecks: 1, cardsPerPlayer: 10, removedSuitInstances: [], removedSpecificCards: [{ rank: "2", suit: "C" }, { rank: "2", suit: "D" }] };
+        if (pc === 6) return { recommendedDecks: 2, cardsPerPlayer: 13, removedSuitInstances: [{ suit: "C", instances: 1 }, { suit: "D", instances: 1 }], removedSpecificCards: [] };
+        if (pc === 7) return { recommendedDecks: 2, cardsPerPlayer: 13, removedSuitInstances: [{ suit: "C", instances: 1 }], removedSpecificCards: [] };
+        if (pc === 8) return { recommendedDecks: 2, cardsPerPlayer: 13, removedSuitInstances: [], removedSpecificCards: [] };
+        // For 2 players or anything else, don't assume removals.
+        return { recommendedDecks: deckCount, cardsPerPlayer: 13, removedSuitInstances: [], removedSpecificCards: [] };
+      }
+
+      function isRedSuit(suit) { return suit === "H" || suit === "D"; }
+
+      function removedSuitCount(suit, removedSuitInstances) {
+        return removedSuitInstances.reduce((sum, x) => sum + (x.suit === suit ? x.instances : 0), 0);
+      }
+
+      function countRemovedSpecific(filterFn, removedSpecificCards) {
+        let c = 0;
+        removedSpecificCards.forEach(card => { if (filterFn(card)) c += 1; });
+        return c;
+      }
+
+      function computeMaxesForPreset(decks, preset) {
+        // Start from full-deck counts for the chosen decks, then subtract removed suit instances + removed specific cards.
+        const removedSuitInstances = preset.removedSuitInstances || [];
+        const removedSpecificCards = preset.removedSpecificCards || [];
+
+        // Suit removals remove 13 cards per instance
+        const removedH = removedSuitCount("H", removedSuitInstances);
+        const removedD = removedSuitCount("D", removedSuitInstances);
+        const removedC = removedSuitCount("C", removedSuitInstances);
+        const removedS = removedSuitCount("S", removedSuitInstances);
+
+        // Helpers: how many even/face cards exist in a suit?
+        const EVEN_PER_SUIT = 6; // 2,4,6,8,10,Q
+        const FACE_PER_SUIT = 3; // J,Q,K
+
+        // Specific removals:
+        const removedSpecificRed = countRemovedSpecific(c => isRedSuit(c.suit), removedSpecificCards);
+        const removedSpecificHearts = countRemovedSpecific(c => c.suit === "H", removedSpecificCards);
+        const removedSpecificEven = countRemovedSpecific(c => EVEN_RANKS.has(c.rank), removedSpecificCards);
+        const removedSpecificFace = countRemovedSpecific(c => FACE_RANKS.has(c.rank), removedSpecificCards);
+        const removedSpecificSevens = countRemovedSpecific(c => c.rank === "7", removedSpecificCards);
+        const removedSpecificAces = countRemovedSpecific(c => c.rank === "A", removedSpecificCards);
+        const removedSpecificQueens = countRemovedSpecific(c => c.rank === "Q", removedSpecificCards);
+
+        // One-eyed/KD specific cards: J♠, J♥, K♦
+        const removedSpecificOneEyedKD = countRemovedSpecific(c =>
+          (c.rank === "J" && (c.suit === "S" || c.suit === "H")) || (c.rank === "K" && c.suit === "D"),
+          removedSpecificCards
+        );
+
+        // King of spades
+        const removedSpecificKSpades = countRemovedSpecific(c => c.rank === "K" && c.suit === "S", removedSpecificCards);
+
+        // Suit-removal impacts on categories:
+        const removedSuitRed = (removedH + removedD) * 13;
+        const removedSuitHearts = removedH * 13;
+        const removedSuitEven = (removedH + removedD + removedC + removedS) * EVEN_PER_SUIT;
+        const removedSuitFace = (removedH + removedD + removedC + removedS) * FACE_PER_SUIT;
+        const removedSuitSevens = (removedH + removedD + removedC + removedS) * 1; // each suit has one 7
+        const removedSuitAces = (removedH + removedD + removedC + removedS) * 1;
+        const removedSuitQueens = (removedH + removedD + removedC + removedS) * 1;
+
+        // One-eyed/KD impacts by suit removal:
+        // J♠ removed if spades suit removed; J♥ removed if hearts suit removed; K♦ removed if diamonds suit removed.
+        const removedSuitOneEyedKD = removedS * 1 + removedH * 1 + removedD * 1;
+
+        // King of spades impacts by suit removal:
+        const removedSuitKSpades = removedS * 1;
+
+        const maxRed = Math.max(0, 26 * decks - removedSuitRed - removedSpecificRed);
+        const maxEven = Math.max(0, 24 * decks - removedSuitEven - removedSpecificEven);
+        const maxTricks = Math.max(0, preset.cardsPerPlayer || 13); // ✅ deal-size based (5 players => 10)
+        const maxHearts = Math.max(0, 13 * decks - removedSuitHearts - removedSpecificHearts);
+        const maxFace = Math.max(0, 12 * decks - removedSuitFace - removedSpecificFace);
+        const maxSevens = Math.max(0, 4 * decks - removedSuitSevens - removedSpecificSevens);
+        const maxAces = Math.max(0, 4 * decks - removedSuitAces - removedSpecificAces);
+        const maxQueens = Math.max(0, 4 * decks - removedSuitQueens - removedSpecificQueens);
+        const maxOneEyedKD = Math.max(0, 3 * decks - removedSuitOneEyedKD - removedSpecificOneEyedKD);
+        const maxKingSpades = Math.max(0, 1 * decks - removedSuitKSpades - removedSpecificKSpades);
+        const maxLastTrick = 1;
+
+        return {
+          red: maxRed,
+          even: maxEven,
+          tricks: maxTricks,
+          hearts: maxHearts,
+          face: maxFace,
+          sevens: maxSevens,
+          aces: maxAces,
+          queens: maxQueens,
+          oneEyedKD: maxOneEyedKD,
+          kingSpades: maxKingSpades,
+          lastTrick: maxLastTrick
+        };
+      }
+
+      function applyPresetLimits({ forceDeckToRecommended = true } = {}) {
+        const preset = getPlayerPreset(playerCount);
+
+        // If playerCount has a known recommended deck count, auto-set deckCount (and UI) by default.
+        if (forceDeckToRecommended && preset.recommendedDecks && preset.recommendedDecks >= 1) {
+          deckCount = preset.recommendedDecks;
+          deckCountSelect.value = String(deckCount);
+        }
+
+        // Only apply the “removed card/suit adjustments” when deckCount matches recommended.
+        // If the user changes decks manually, we revert to scaled-by-decks defaults.
+        const useAdjustments = (deckCount === preset.recommendedDecks);
+
+        if (!useAdjustments) {
+          // Simple scale: defaultMaxCards * deckCount (but keep tricks/last-trick deal-based sane)
+          rounds.forEach((round, idx) => {
+            if (round.defaultMaxCards != null) {
+              round.maxCards = round.defaultMaxCards * deckCount;
+            }
+          });
+          // Fix deal-based rounds when scaling:
+          rounds[2].maxCards = preset.cardsPerPlayer || 13;  // No Tricks
+          rounds[10].maxCards = 1;                           // No LAST TRICK
+          if (limitsHint) {
+            limitsHint.textContent = "Deck limits scaled by deck count (manual). Deal-size limits (tricks/last trick) still match the player deal.";
+          }
+          return;
+        }
+
+        const maxes = computeMaxesForPreset(deckCount, preset);
+
+        rounds[0].maxCards = maxes.red;
+        rounds[1].maxCards = maxes.even;
+        rounds[2].maxCards = maxes.tricks;
+        rounds[3].maxCards = maxes.hearts;
+        rounds[4].maxCards = maxes.face;
+        rounds[5].maxCards = maxes.sevens;
+        rounds[6].maxCards = maxes.aces;
+        rounds[7].maxCards = maxes.queens;
+        rounds[8].maxCards = maxes.oneEyedKD;
+        rounds[9].maxCards = maxes.kingSpades;
+        rounds[10].maxCards = maxes.lastTrick;
+
+        if (limitsHint) {
+          limitsHint.textContent = "Auto defaults applied: adjusted for player count, deal size, and the standard removed-card rules for that player count.";
+        }
+      }
 
       /* ---------------------- Player Names Helpers ---------------------- */
 
@@ -758,12 +765,11 @@
 
       function syncHeaderNamesFromSettings() {
         const names = getCurrentPlayerNamesFromSettings();
-        const headerNameNodes = document.querySelectorAll(".player-name");
+        const headerNameNodes = document.querySelectorAll(".player-name-text");
         headerNameNodes.forEach((node, idx) => {
           if (names[idx]) node.textContent = names[idx];
         });
 
-        // Also update All-of-the-Above grid column headers
         const allHeaderCells = allHeadRow.querySelectorAll("th[data-all-player]");
         allHeaderCells.forEach((th, idx) => {
           if (names[idx]) th.textContent = names[idx];
@@ -882,7 +888,6 @@
           state.roundMaxCards[idx] = round.maxCards;
         });
 
-        // All-of-the-Above per-rule grid
         const allInputs = allRulesBody.querySelectorAll("input[data-all-rule]");
         allInputs.forEach((input) => {
           const rule = input.dataset.allRule;
@@ -897,11 +902,7 @@
       function loadState() {
         const raw = localStorage.getItem(STORAGE_KEY);
         if (!raw) return null;
-        try {
-          return JSON.parse(raw);
-        } catch {
-          return null;
-        }
+        try { return JSON.parse(raw); } catch { return null; }
       }
 
       function applyLoadedState(state) {
@@ -909,33 +910,31 @@
 
         if (state.deckCount != null) {
           const dc = parseInt(state.deckCount, 10);
-          if (!isNaN(dc) && dc >= 1) {
-            deckCount = dc;
-          }
+          if (!isNaN(dc) && dc >= 1) deckCount = dc;
         }
         deckCountSelect.value = String(deckCount);
-
-        if (Array.isArray(state.roundMaxCards)) {
-          state.roundMaxCards.forEach((val, idx) => {
-            if (idx < rounds.length && val != null) {
-              const v = parseInt(val, 10);
-              if (!isNaN(v) && v >= 0) {
-                rounds[idx].maxCards = v;
-              }
-            }
-          });
-        } else {
-          applyDeckCountToDefaults();
-        }
 
         if (Array.isArray(state.includedRules)) {
           includedRules = state.includedRules.slice();
         } else {
-          includedRules = rounds.map((_, idx) => idx < rounds.length - 1 ? true : true);
+          includedRules = rounds.map(() => true);
         }
 
         playerCount = state.playerCount || 4;
         playerCountInput.value = playerCount;
+
+        // ✅ apply auto preset limits first (so UI shows correct max cards)
+        applyPresetLimits({ forceDeckToRecommended: false });
+
+        // If saved roundMaxCards exists, it overrides.
+        if (Array.isArray(state.roundMaxCards)) {
+          state.roundMaxCards.forEach((val, idx) => {
+            if (idx < rounds.length && val != null) {
+              const v = parseInt(val, 10);
+              if (!isNaN(v) && v >= 0) rounds[idx].maxCards = v;
+            }
+          });
+        }
 
         buildPlayerHeaders();
         buildRoundsBody();
@@ -945,50 +944,24 @@
         buildPlayerNameInputs(state.players || []);
         updateCardRemovalHint();
 
-        // Normal round inputs
         const inputs = scoreTable.querySelectorAll("tbody input[type='number']");
         inputs.forEach((input) => {
           const key = `${input.dataset.round}_${input.dataset.player}`;
-          if (state.scores[key] !== undefined) {
-            input.value = state.scores[key];
-          }
+          if (state.scores[key] !== undefined) input.value = state.scores[key];
         });
 
-        // All-of-the-Above per-rule grid
         const allHand = state.allHand || {};
         const allInputs = allRulesBody.querySelectorAll("input[data-all-rule]");
         allInputs.forEach((input) => {
           const r = input.dataset.allRule;
           const p = input.dataset.player;
           const val = allHand[r] && allHand[r][p];
-          if (val !== undefined) {
-            input.value = val;
-          }
+          if (val !== undefined) input.value = val;
         });
 
         updateAllHandTotals();
         updateScores();
         updateSettingsInputsFromRounds();
-      }
-
-      /* ---------------------- Deck & Defaults ---------------------- */
-
-      function applyDeckCountToDefaults() {
-        rounds.forEach((round) => {
-          if (round.defaultMaxCards != null) {
-            round.maxCards = round.defaultMaxCards * deckCount;
-          }
-        });
-      }
-
-      function restoreDefaults() {
-        applyDeckCountToDefaults();
-        updateSettingsInputsFromRounds();
-        enforceAllRoundLimits();
-        enforceAllHandLimitsForAll();
-        updateAllHandTotals();
-        updateScores();
-        saveState();
       }
 
       /* ---------------------- Settings UI ---------------------- */
@@ -997,7 +970,6 @@
         settingsGrid.innerHTML = "";
 
         rounds.forEach((round, idx) => {
-          // No per-round max for the All-of-the-Above total row
           if (round.defaultMaxCards == null && round.maxCards == null) return;
 
           const labelDiv = document.createElement("div");
@@ -1009,9 +981,7 @@
           input.min = "0";
           input.step = "1";
           input.dataset.roundSettings = String(idx);
-          input.value = round.maxCards != null
-            ? round.maxCards
-            : (round.defaultMaxCards != null ? round.defaultMaxCards * deckCount : 0);
+          input.value = (round.maxCards != null) ? round.maxCards : 0;
 
           input.addEventListener("input", () => {
             let val = parseInt(input.value || "0", 10);
@@ -1048,9 +1018,7 @@
       }
 
       function buildPlayerHeaders() {
-        while (headerRow.children.length > 1) {
-          headerRow.removeChild(headerRow.lastElementChild);
-        }
+        while (headerRow.children.length > 1) headerRow.removeChild(headerRow.lastElementChild);
 
         for (let p = 0; p < playerCount; p++) {
           const th = document.createElement("th");
@@ -1063,7 +1031,17 @@
 
           const nameDiv = document.createElement("div");
           nameDiv.className = "player-name";
-          nameDiv.textContent = "Player " + (p + 1);
+
+          const placeSpan = document.createElement("span");
+          placeSpan.className = "player-place";
+          placeSpan.textContent = ""; // filled in by ranking
+
+          const nameSpan = document.createElement("span");
+          nameSpan.className = "player-name-text";
+          nameSpan.textContent = "Player " + (p + 1);
+
+          nameDiv.appendChild(placeSpan);
+          nameDiv.appendChild(nameSpan);
 
           const totalDiv = document.createElement("div");
           totalDiv.className = "player-total";
@@ -1082,7 +1060,6 @@
         roundsBody.innerHTML = "";
 
         rounds.forEach((round, rIndex) => {
-          // Skip disabled rules for rounds 0..10
           if (rIndex < rounds.length - 1 && !includedRules[rIndex]) return;
 
           const tr = document.createElement("tr");
@@ -1141,7 +1118,6 @@
             note.textContent = "0 pts";
 
             if (rIndex === rounds.length - 1) {
-              // Round 12: total points from All-of-the-Above grid
               input.readOnly = true;
               input.addEventListener("focus", (e) => e.target.blur());
               wrapper.appendChild(input);
@@ -1165,10 +1141,8 @@
       }
 
       function buildAllHandGrid() {
-        // Header
-        while (allHeadRow.children.length > 1) {
-          allHeadRow.removeChild(allHeadRow.lastElementChild);
-        }
+        while (allHeadRow.children.length > 1) allHeadRow.removeChild(allHeadRow.lastElementChild);
+
         const names = getCurrentPlayerNamesFromSettings();
         for (let p = 0; p < playerCount; p++) {
           const th = document.createElement("th");
@@ -1177,10 +1151,9 @@
           allHeadRow.appendChild(th);
         }
 
-        // Body
         allRulesBody.innerHTML = "";
         for (let rIndex = 0; rIndex < rounds.length - 1; rIndex++) {
-          if (!includedRules[rIndex]) continue; // skip disabled rules
+          if (!includedRules[rIndex]) continue;
 
           const round = rounds[rIndex];
           const tr = document.createElement("tr");
@@ -1225,7 +1198,6 @@
           allRulesBody.appendChild(tr);
         }
 
-        // Initialize the "X / N cards" indicators
         for (let rIndex = 0; rIndex < rounds.length - 1; rIndex++) {
           if (!includedRules[rIndex]) continue;
           const round = rounds[rIndex];
@@ -1245,9 +1217,7 @@
         if (!round || round.maxCards == null) return;
 
         const max = round.maxCards;
-        const inputsThisRound = roundsBody.querySelectorAll(
-          `input[data-round="${rIndex}"]`
-        );
+        const inputsThisRound = roundsBody.querySelectorAll(`input[data-round="${rIndex}"]`);
 
         let sumOthers = 0;
         inputsThisRound.forEach((el) => {
@@ -1267,19 +1237,14 @@
       }
 
       function enforceAllRoundLimits(onlyRoundIndex = null) {
-        const roundsToCheck =
-          onlyRoundIndex == null
-            ? rounds.map((_, idx) => idx)
-            : [onlyRoundIndex];
+        const roundsToCheck = onlyRoundIndex == null ? rounds.map((_, idx) => idx) : [onlyRoundIndex];
 
         roundsToCheck.forEach((rIndex) => {
           const round = rounds[rIndex];
           if (!round || round.maxCards == null) return;
 
           const max = round.maxCards;
-          const inputsThisRound = roundsBody.querySelectorAll(
-            `input[data-round="${rIndex}"]`
-          );
+          const inputsThisRound = roundsBody.querySelectorAll(`input[data-round="${rIndex}"]`);
 
           let total = 0;
           inputsThisRound.forEach((input) => {
@@ -1294,25 +1259,20 @@
           inputsThisRound.forEach((input) => {
             let val = parseInt(input.value || "0", 10);
             if (isNaN(val) || val < 0) val = 0;
-            if (val > remaining) {
-              val = remaining;
-            }
+            if (val > remaining) val = remaining;
             input.value = val ? String(val) : "";
             remaining -= val;
           });
         });
       }
 
-      // All-of-the-Above per-rule grid limits
       function enforceAllHandLimitForInput(input) {
         const rIndex = parseInt(input.dataset.allRule, 10);
         const round = rounds[rIndex];
         if (!round || round.maxCards == null) return;
 
         const max = round.maxCards;
-        const inputsThisRule = allRulesBody.querySelectorAll(
-          `input[data-all-rule="${rIndex}"]`
-        );
+        const inputsThisRule = allRulesBody.querySelectorAll(`input[data-all-rule="${rIndex}"]`);
 
         let sumOthers = 0;
         inputsThisRule.forEach((el) => {
@@ -1336,9 +1296,7 @@
         if (!round || round.maxCards == null) return;
 
         const max = round.maxCards;
-        const inputsThisRule = allRulesBody.querySelectorAll(
-          `input[data-all-rule="${ruleIndex}"]`
-        );
+        const inputsThisRule = allRulesBody.querySelectorAll(`input[data-all-rule="${ruleIndex}"]`);
 
         let total = 0;
         inputsThisRule.forEach((input) => {
@@ -1353,9 +1311,7 @@
         inputsThisRule.forEach((input) => {
           let val = parseInt(input.value || "0", 10);
           if (isNaN(val) || val < 0) val = 0;
-          if (val > remaining) {
-            val = remaining;
-          }
+          if (val > remaining) val = remaining;
           input.value = val ? String(val) : "";
           remaining -= val;
         });
@@ -1367,30 +1323,21 @@
         }
       }
 
-      /* ---------------------- Score Logic ---------------------- */
+      /* ---------------------- Score Logic + Places ---------------------- */
 
       function resetScores() {
         const inputs = scoreTable.querySelectorAll("tbody input[type='number']");
-        inputs.forEach((input) => {
-          input.value = "";
-        });
+        inputs.forEach((input) => { input.value = ""; });
 
         const notes = scoreTable.querySelectorAll(".cell-note");
-        notes.forEach((n) => {
-          n.textContent = "0 pts";
-          n.classList.remove("highlight");
-        });
+        notes.forEach((n) => { n.textContent = "0 pts"; n.classList.remove("highlight"); });
 
-        // All-of-the-Above grid
         const allInputs = allRulesBody.querySelectorAll("input[data-all-rule]");
-        allInputs.forEach((input) => {
-          input.value = "";
-        });
+        allInputs.forEach((input) => { input.value = ""; });
+
         const allNotes = allRulesBody.querySelectorAll(".cell-note");
-        allNotes.forEach((n) => {
-          n.textContent = "0 pts";
-          n.classList.remove("highlight");
-        });
+        allNotes.forEach((n) => { n.textContent = "0 pts"; n.classList.remove("highlight"); });
+
         updateAllHandTotals();
 
         const totals = scoreTable.querySelectorAll(".player-total");
@@ -1398,6 +1345,9 @@
 
         const headers = scoreTable.querySelectorAll(".player-header-inner");
         headers.forEach((h) => h.classList.remove("winner"));
+
+        const placeBadges = scoreTable.querySelectorAll(".player-place");
+        placeBadges.forEach((b) => (b.textContent = ""));
 
         const totalEls = document.querySelectorAll(".round-total[data-round]");
         totalEls.forEach((el) => {
@@ -1408,13 +1358,59 @@
             el.textContent = `0 / ${round.maxCards} cards`;
             el.classList.add("incomplete");
           } else {
-            if (round && round.pointsPerCard === null) {
-              el.textContent = "";
-            }
+            el.textContent = "";
           }
         });
 
         localStorage.removeItem(STORAGE_KEY);
+      }
+
+      function updatePlaces(totals) {
+        const badges = document.querySelectorAll(".player-place");
+        if (!badges || badges.length === 0) return;
+
+        const anyNonZero = totals.some(v => v !== 0);
+        if (!anyNonZero) {
+          badges.forEach(b => b.textContent = "");
+          return;
+        }
+
+        const items = totals.map((t, idx) => ({ idx, total: t }));
+        items.sort((a, b) => a.total - b.total || a.idx - b.idx);
+
+        let lastTotal = null;
+        let rank = 0;
+        let seen = 0;
+
+        const rankByIdx = new Array(totals.length).fill(0);
+        const tieByIdx = new Array(totals.length).fill(false);
+
+        while (seen < items.length) {
+          const cur = items[seen];
+          if (lastTotal === null || cur.total !== lastTotal) {
+            rank = seen + 1;
+            lastTotal = cur.total;
+          } else {
+            tieByIdx[cur.idx] = true;
+          }
+          rankByIdx[cur.idx] = rank;
+          seen++;
+        }
+
+        // Mark ties for all players sharing same total
+        const totalToPlayers = new Map();
+        totals.forEach((t, idx) => {
+          if (!totalToPlayers.has(t)) totalToPlayers.set(t, []);
+          totalToPlayers.get(t).push(idx);
+        });
+        totalToPlayers.forEach((arr) => {
+          if (arr.length > 1) arr.forEach(i => tieByIdx[i] = true);
+        });
+
+        badges.forEach((b, idx) => {
+          const r = rankByIdx[idx] || (idx + 1);
+          b.textContent = (tieByIdx[idx] ? "T#" : "#") + r;
+        });
       }
 
       function updateScores() {
@@ -1422,24 +1418,17 @@
         const roundSums = new Array(rounds.length).fill(0);
 
         const inputs = scoreTable.querySelectorAll("tbody input[type='number']");
-
         inputs.forEach((input) => {
           const r = parseInt(input.dataset.round, 10);
           const p = parseInt(input.dataset.player, 10);
           const round = rounds[r];
           const count = parseInt(input.value || "0", 10) || 0;
 
-          if (!isNaN(count) && count > 0 && round.maxCards != null) {
-            roundSums[r] += count;
-          }
+          if (!isNaN(count) && count > 0 && round.maxCards != null) roundSums[r] += count;
 
           let points = 0;
-          if (round.pointsPerCard === null) {
-            // Round 12: value is already total points
-            points = count;
-          } else {
-            points = count * round.pointsPerCard;
-          }
+          if (round.pointsPerCard === null) points = count; // Round 12 already points
+          else points = count * round.pointsPerCard;
 
           totals[p] += points;
 
@@ -1454,22 +1443,18 @@
 
         const totalNodes = document.querySelectorAll(".player-total");
         const headers = document.querySelectorAll(".player-header-inner");
-
-        totalNodes.forEach((node, idx) => {
-          node.textContent = totals[idx];
-        });
+        totalNodes.forEach((node, idx) => { node.textContent = totals[idx]; });
 
         headers.forEach((h) => h.classList.remove("winner"));
 
         const anyNonZero = totals.some((v) => v !== 0);
         if (anyNonZero) {
           const minTotal = Math.min(...totals);
-          totals.forEach((t, idx) => {
-            if (t === minTotal) {
-              headers[idx].classList.add("winner");
-            }
-          });
+          totals.forEach((t, idx) => { if (t === minTotal) headers[idx].classList.add("winner"); });
         }
+
+        // ✅ update place badges
+        updatePlaces(totals);
       }
 
       function updateRoundTotals(roundSums) {
@@ -1479,23 +1464,14 @@
           if (!el || !round) return;
 
           el.classList.remove("ok", "incomplete");
-
-          if (round.maxCards == null) {
-            el.textContent = "";
-            return;
-          }
+          if (round.maxCards == null) { el.textContent = ""; return; }
 
           el.textContent = `${sum} / ${round.maxCards} cards`;
-
-          if (sum === round.maxCards) {
-            el.classList.add("ok");
-          } else {
-            el.classList.add("incomplete");
-          }
+          if (sum === round.maxCards) el.classList.add("ok");
+          else el.classList.add("incomplete");
         });
       }
 
-      // Compute Round 12 totals + All-of-the-Above indicators
       function updateAllHandTotals() {
         const totalsByPlayer = new Array(playerCount).fill(0);
         const ruleTotals = new Array(rounds.length - 1).fill(0);
@@ -1504,9 +1480,7 @@
           if (!includedRules[rIndex]) continue;
 
           const rule = rounds[rIndex];
-          const inputsThisRule = allRulesBody.querySelectorAll(
-            `input[data-all-rule="${rIndex}"]`
-          );
+          const inputsThisRule = allRulesBody.querySelectorAll(`input[data-all-rule="${rIndex}"]`);
 
           inputsThisRule.forEach((input) => {
             const p = parseInt(input.dataset.player, 10);
@@ -1523,7 +1497,6 @@
           });
         }
 
-        // Update "X / N cards" per rule row in All-of-the-Above grid
         for (let rIndex = 0; rIndex < rounds.length - 1; rIndex++) {
           if (!includedRules[rIndex]) continue;
           const round = rounds[rIndex];
@@ -1531,19 +1504,13 @@
           if (!indicator || round.maxCards == null) continue;
           indicator.classList.remove("ok", "incomplete");
           indicator.textContent = `${ruleTotals[rIndex]} / ${round.maxCards} cards`;
-          if (ruleTotals[rIndex] === round.maxCards) {
-            indicator.classList.add("ok");
-          } else {
-            indicator.classList.add("incomplete");
-          }
+          if (ruleTotals[rIndex] === round.maxCards) indicator.classList.add("ok");
+          else indicator.classList.add("incomplete");
         }
 
-        // Push totals into Round 12 row
         const allRowIndex = rounds.length - 1;
         for (let p = 0; p < playerCount; p++) {
-          const mainInput = document.querySelector(
-            `input[data-round="${allRowIndex}"][data-player="${p}"]`
-          );
+          const mainInput = document.querySelector(`input[data-round="${allRowIndex}"][data-player="${p}"]`);
           if (mainInput) {
             const total = totalsByPlayer[p];
             mainInput.value = total ? String(total) : "";
@@ -1566,9 +1533,7 @@
             b: Math.round((c1.b + c2.b * 1.4) / 2.4)
           };
           return `rgba(${mix.r},${mix.g},${mix.b},0.6)`;
-        } catch {
-          return "rgba(30,64,175,0.55)";
-        }
+        } catch { return "rgba(30,64,175,0.55)"; }
       }
 
       function hexToRgb(hex) {
@@ -1578,6 +1543,21 @@
         return { r: (v >> 16) & 255, g: (v >> 8) & 255, b: v & 255 };
       }
 
+      /* ---------------------- Restore Defaults ---------------------- */
+
+      function restoreDefaults() {
+        // ✅ Re-apply the computed preset max limits (and rebuild indicators)
+        applyPresetLimits({ forceDeckToRecommended: true });
+        updateSettingsInputsFromRounds();
+        buildRoundsBody();
+        buildAllHandGrid();
+        enforceAllRoundLimits();
+        enforceAllHandLimitsForAll();
+        updateAllHandTotals();
+        updateScores();
+        saveState();
+      }
+
       /* ---------------------- Event Setup ---------------------- */
 
       buildBtn.addEventListener("click", () => {
@@ -1585,6 +1565,9 @@
         const existingNames = getCurrentPlayerNamesFromSettings();
         playerCount = desired;
         playerCountInput.value = desired;
+
+        // ✅ Apply player preset (includes deck recommendation + adjusted limits)
+        applyPresetLimits({ forceDeckToRecommended: true });
 
         buildPlayerHeaders();
         buildRoundsBody();
@@ -1602,15 +1585,18 @@
 
       resetBtn.addEventListener("click", resetScores);
 
-      restoreDefaultsBtn.addEventListener("click", () => {
-        restoreDefaults();
-      });
+      restoreDefaultsBtn.addEventListener("click", restoreDefaults);
 
       deckCountSelect.addEventListener("change", () => {
         const dc = parseInt(deckCountSelect.value, 10);
-        deckCount = !isNaN(dc) && dc >= 1 ? dc : 1;
-        applyDeckCountToDefaults();
+        deckCount = (!isNaN(dc) && dc >= 1) ? dc : 1;
+
+        // ✅ Re-apply limits (if deck != recommended, it scales + keeps tricks deal-based)
+        applyPresetLimits({ forceDeckToRecommended: false });
+
         updateSettingsInputsFromRounds();
+        buildRoundsBody();
+        buildAllHandGrid();
         enforceAllRoundLimits();
         enforceAllHandLimitsForAll();
         updateAllHandTotals();
@@ -1626,24 +1612,32 @@
 
       toggleAllDetailsBtn.addEventListener("click", () => {
         const nowHidden = allDetailsCard.classList.toggle("hidden");
-        toggleAllDetailsBtn.textContent = nowHidden
-          ? "Show All-of-the-Above Grid"
-          : "Hide All-of-the-Above Grid";
+        toggleAllDetailsBtn.textContent = nowHidden ? "Show All-of-the-Above Grid" : "Hide All-of-the-Above Grid";
       });
 
       /* ---------------------- Initial Load ---------------------- */
 
-      applyDeckCountToDefaults();
+      // default structure
       buildPlayerHeaders();
       buildRoundsBody();
       buildSettingsUI();
       buildRulesUI();
       buildAllHandGrid();
-      buildPlayerNameInputs(); // default names
+      buildPlayerNameInputs();
       updateCardRemovalHint();
 
+      // apply saved state if present
       const saved = loadState();
-      applyLoadedState(saved);
+      if (saved) applyLoadedState(saved);
+      else {
+        // ✅ default preset for 4 players
+        applyPresetLimits({ forceDeckToRecommended: true });
+        updateSettingsInputsFromRounds();
+        buildRoundsBody();
+        buildAllHandGrid();
+        updateAllHandTotals();
+        updateScores();
+      }
 
     })();
   </script>
