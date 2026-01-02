@@ -202,13 +202,17 @@
       margin-top: 0.6rem;
       border-radius: 0.95rem;
       border: 1px solid rgba(148,163,184,0.2);
-      overflow: hidden;
+      overflow: visible;
       background: radial-gradient(circle at top left, rgba(15,23,42,0.9), rgba(15,23,42,1));
     }
 
     .table-scroll {
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
+	  
+	  /* ✅ this keeps your rounded corners without breaking sticky */
+	  border-radius: 0.95rem;
+	  overflow-y: visible;
     }
 
     table {
@@ -218,13 +222,39 @@
     }
 
     /* ✅ Sticky header (names stay visible while you scroll) */
+	/* Make the entire table header sticky */
+	thead {
+	  position: sticky;
+	  top: 0;
+	  z-index: 40;
+	}
+	
     thead th {
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 50;
       background: rgba(15,23,42,0.98);
       backdrop-filter: blur(18px);
     }
+
+	/* Top-left corner cell (Round header) must be highest */
+	thead th.round-header {
+	  z-index: 60;
+	}
+
+	/* Sticky first column for body rows */
+	tbody th.round-header {
+	  position: sticky;
+	  left: 0;
+	  z-index: 20;
+	  background: rgba(17,24,39,0.96);
+	}
+	
+	/* Ensure body cells never paint over headers */
+	tbody td {
+	  position: relative;
+	  z-index: 1;
+	}
 
     th, td {
       padding: 0.35rem 0.4rem;
@@ -543,7 +573,7 @@
   <script>
     (function () {
       const STORAGE_KEY = "canadianSaladScores_v2.0";
-	  const APP_VERSION = "v2.0";
+	  const APP_VERSION = "v2.0.0";
 
       const rounds = [
         { name: "No RED Cards", description: "Each red card (♥ or ♦) = 5 pts", pointsPerCard: 5, defaultMaxCards: 26, maxCards: 26 },
