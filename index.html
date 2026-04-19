@@ -418,6 +418,95 @@
       border-top: 1px solid rgba(148,163,184,0.18);
     }
 
+
+
+    .score-summary-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 500;
+    }
+
+    .score-summary-modal {
+      width: min(420px, 100%);
+      background: linear-gradient(135deg, rgba(15,23,42,0.98), rgba(17,24,39,0.98));
+      border: 1px solid rgba(148,163,184,0.2);
+      border-radius: 1rem;
+      box-shadow: 0 24px 60px rgba(15,23,42,0.7);
+      padding: 0.9rem;
+    }
+
+    .score-summary-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .score-summary-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .score-summary-subtitle {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+
+    .score-summary-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      margin-top: 0.35rem;
+    }
+
+    .score-summary-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 0.65rem;
+      align-items: center;
+      padding: 0.55rem 0.65rem;
+      border-radius: 0.8rem;
+      border: 1px solid rgba(148,163,184,0.16);
+      background: rgba(15,23,42,0.72);
+    }
+
+    .score-summary-rank {
+      min-width: 2.2rem;
+      text-align: center;
+      padding: 0.18rem 0.4rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.25);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-main);
+      background: rgba(30,41,59,0.9);
+    }
+
+    .score-summary-name {
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    .score-summary-points {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #bbf7d0;
+    }
+
+    .score-summary-empty {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 0.65rem 0.4rem 0.35rem;
+    }
+
     @media (max-width: 640px) {
       header h1 { font-size: 1.25rem; }
       .card { padding: 0.7rem; }
@@ -435,7 +524,8 @@
       <p>Tap the bad cards / tricks per player &mdash; scores update automatically.</p>
     </header>
 
-    <div class="settings-toggle-row">
+    <div class="settings-toggle-row" style="gap:0.5rem; flex-wrap:wrap;">
+      <button id="showScoreSummaryBtn" type="button" class="ghost small">Show Standings</button>
       <button id="toggleSettingsBtn" type="button" class="ghost small">Show Settings</button>
     </div>
 
@@ -593,6 +683,19 @@
       </div>
     </section>
 
+    <div class="score-summary-overlay hidden" id="scoreSummaryOverlay">
+      <div class="score-summary-modal" role="dialog" aria-modal="true" aria-labelledby="scoreSummaryTitle">
+        <div class="score-summary-header">
+          <div>
+            <div class="score-summary-title" id="scoreSummaryTitle">Current Standings</div>
+            <div class="score-summary-subtitle">Lowest score wins.</div>
+          </div>
+          <button id="closeScoreSummaryBtn" type="button" class="secondary small">Close</button>
+        </div>
+        <div class="score-summary-list" id="scoreSummaryList"></div>
+      </div>
+    </div>
+
     <!-- Footer line -->
     <div class="app-footer">
       <span>Cote Free Time Productions</span>
@@ -659,6 +762,10 @@
       const allHeaderScroll = document.getElementById("allHeaderScroll");
 
       const versionLabel = document.getElementById("versionLabel");
+      const showScoreSummaryBtn = document.getElementById("showScoreSummaryBtn");
+      const scoreSummaryOverlay = document.getElementById("scoreSummaryOverlay");
+      const scoreSummaryList = document.getElementById("scoreSummaryList");
+      const closeScoreSummaryBtn = document.getElementById("closeScoreSummaryBtn");
       if (versionLabel) versionLabel.textContent = APP_VERSION;
 
       let playerCount = 4;
@@ -1413,6 +1520,75 @@
         syncStickyHeaderWidths();
       }
 
+
+      function getPlayerTotals() {
+        const totals = new Array(playerCount).fill(0);
+        const inputs = scoreTable.querySelectorAll("tbody input[type='number']");
+
+        inputs.forEach((input) => {
+          const r = parseInt(input.dataset.round, 10);
+          const p = parseInt(input.dataset.player, 10);
+          const round = rounds[r];
+          const count = parseInt(input.value || "0", 10) || 0;
+
+          let points = 0;
+          if (round.pointsPerCard === null) points = count;
+          else points = count * round.pointsPerCard;
+
+          totals[p] += points;
+        });
+
+        return totals;
+      }
+
+      function renderScoreSummary() {
+        if (!scoreSummaryList) return;
+
+        const names = getCurrentPlayerNamesFromSettings();
+        const totals = getPlayerTotals();
+        const entries = totals.map((total, idx) => ({
+          idx,
+          total,
+          name: names[idx] || `Player ${idx + 1}`
+        }));
+
+        entries.sort((a, b) => a.total - b.total || a.name.localeCompare(b.name) || a.idx - b.idx);
+
+        scoreSummaryList.innerHTML = "";
+
+        if (!entries.length) {
+          scoreSummaryList.innerHTML = '<div class="score-summary-empty">No players found.</div>';
+          return;
+        }
+
+        let displayRank = 1;
+        entries.forEach((entry, index) => {
+          if (index > 0 && entry.total !== entries[index - 1].total) {
+            displayRank = index + 1;
+          }
+
+          const item = document.createElement("div");
+          item.className = "score-summary-item";
+          item.innerHTML = `
+            <div class="score-summary-rank">#${displayRank}</div>
+            <div class="score-summary-name">${entry.name}</div>
+            <div class="score-summary-points">${entry.total}</div>
+          `;
+          scoreSummaryList.appendChild(item);
+        });
+      }
+
+      function openScoreSummary() {
+        if (!scoreSummaryOverlay) return;
+        renderScoreSummary();
+        scoreSummaryOverlay.classList.remove("hidden");
+      }
+
+      function closeScoreSummary() {
+        if (!scoreSummaryOverlay) return;
+        scoreSummaryOverlay.classList.add("hidden");
+      }
+
       function updatePlaces(totals) {
         const badges = document.querySelectorAll(".player-place");
         if (!badges || badges.length === 0) return;
@@ -1639,6 +1815,17 @@
         updateCardRemovalHint();
         saveState();
         syncStickyHeaderWidths();
+      });
+
+      showScoreSummaryBtn.addEventListener("click", openScoreSummary);
+      closeScoreSummaryBtn.addEventListener("click", closeScoreSummary);
+      scoreSummaryOverlay.addEventListener("click", (e) => {
+        if (e.target === scoreSummaryOverlay) closeScoreSummary();
+      });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && scoreSummaryOverlay && !scoreSummaryOverlay.classList.contains("hidden")) {
+          closeScoreSummary();
+        }
       });
 
       toggleSettingsBtn.addEventListener("click", () => {
