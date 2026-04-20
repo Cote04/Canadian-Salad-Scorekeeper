@@ -1497,9 +1497,13 @@
       }
 
       function syncDeckCountFromPlayerInput() {
-        const pc = clampPlayerCount(parseInt(playerCountInput.value, 10));
-        if (playerCountInput.value !== String(pc)) playerCountInput.value = String(pc);
+        const raw = (playerCountInput.value || "").trim();
+        if (raw === "") return;
 
+        const parsed = parseInt(raw, 10);
+        if (Number.isNaN(parsed)) return;
+
+        const pc = clampPlayerCount(parsed);
         const recommendedDeckCount = gameMode === "short" ? 1 : getRecommendedDeckCount(pc);
         deckCount = recommendedDeckCount;
         if (deckCountSelect) {
@@ -2842,6 +2846,46 @@
       });
 
       playerCountInput.addEventListener("input", () => {
+        syncDeckCountFromPlayerInput();
+      });
+
+      playerCountInput.addEventListener("change", () => {
+        const raw = (playerCountInput.value || "").trim();
+        if (raw === "") {
+          playerCountInput.value = String(playerCount);
+          syncDeckCountFromPlayerInput();
+          return;
+        }
+
+        const parsed = parseInt(raw, 10);
+        if (Number.isNaN(parsed)) {
+          playerCountInput.value = String(playerCount);
+          syncDeckCountFromPlayerInput();
+          return;
+        }
+
+        const pc = clampPlayerCount(parsed);
+        playerCountInput.value = String(pc);
+        syncDeckCountFromPlayerInput();
+      });
+
+      playerCountInput.addEventListener("blur", () => {
+        const raw = (playerCountInput.value || "").trim();
+        if (raw === "") {
+          playerCountInput.value = String(playerCount);
+          syncDeckCountFromPlayerInput();
+          return;
+        }
+
+        const parsed = parseInt(raw, 10);
+        if (Number.isNaN(parsed)) {
+          playerCountInput.value = String(playerCount);
+          syncDeckCountFromPlayerInput();
+          return;
+        }
+
+        const pc = clampPlayerCount(parsed);
+        playerCountInput.value = String(pc);
         syncDeckCountFromPlayerInput();
       });
 
