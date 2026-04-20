@@ -36,7 +36,7 @@
       padding-bottom: calc(2.5rem + env(safe-area-inset-bottom));
     }
 
-    header { text-align: center; margin-bottom: 0.5rem; }
+    header { text-align: center; margin-bottom: 0.35rem; }
     header h1 { margin: 0; font-size: 1.5rem; letter-spacing: 0.05em; }
     header p { margin: 0.35rem 0 0; font-size: 0.8rem; color: var(--text-muted); }
 
@@ -138,7 +138,7 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      gap: 0.35rem;
+      gap: 0.22rem;
     }
 
     .settings-actions label {
@@ -149,13 +149,37 @@
       gap: 0.3rem;
     }
 
-    .settings-actions select {
+    .settings-actions select,
+    .controls select,
+    .rule-order-input {
       padding: 0.2rem 0.5rem;
       border-radius: 0.6rem;
       border: 1px solid rgba(148,163,184,0.8);
       background: #020617;
       color: var(--text-main);
       font-size: 0.8rem;
+    }
+
+    .rule-config-controls {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .rule-config-controls label {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .rule-order-input {
+      width: 3.3rem;
+      text-align: center;
+      padding: 0.18rem 0.3rem;
     }
 
     .settings-grid {
@@ -264,7 +288,7 @@
     .player-name {
       display: flex;
       align-items: center;
-      gap: 0.35rem;
+      gap: 0.22rem;
       font-size: 0.75rem;
       font-weight: 600;
       line-height: 1.1;
@@ -343,7 +367,7 @@
       outline-offset: 1px;
     }
 
-    .cell-note { font-size: 0.68rem; color: var(--text-muted); min-height: 0.9rem; }
+    .cell-note { font-size: 0.62rem; color: var(--text-muted); min-height: 0.9rem; }
     .cell-note.highlight { color: #f97316; font-weight: 600; }
 
     tfoot td {
@@ -431,6 +455,10 @@
       z-index: 500;
     }
 
+    .score-summary-overlay.hidden {
+      display: none;
+    }
+
     .score-summary-modal {
       width: min(420px, 100%);
       background: linear-gradient(135deg, rgba(15,23,42,0.98), rgba(17,24,39,0.98));
@@ -462,23 +490,23 @@
     .score-summary-list {
       display: flex;
       flex-direction: column;
-      gap: 0.45rem;
+      gap: 0.3rem;
       margin-top: 0.35rem;
     }
 
     .score-summary-item {
       display: grid;
       grid-template-columns: auto 1fr auto;
-      gap: 0.65rem;
+      gap: 0.3rem;
       align-items: center;
-      padding: 0.55rem 0.65rem;
+      padding: 0.4rem 0.5rem;
       border-radius: 0.8rem;
       border: 1px solid rgba(148,163,184,0.16);
       background: rgba(15,23,42,0.72);
     }
 
     .score-summary-rank {
-      min-width: 2.2rem;
+      min-width: 1.9rem;
       text-align: center;
       padding: 0.18rem 0.4rem;
       border-radius: 999px;
@@ -490,7 +518,7 @@
     }
 
     .score-summary-name {
-      font-size: 0.84rem;
+      font-size: 0.8rem;
       font-weight: 600;
     }
 
@@ -507,9 +535,346 @@
       padding: 0.65rem 0.4rem 0.35rem;
     }
 
+    .history-game-summary {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 0.6rem;
+      align-items: center;
+    }
+
+    .history-game-winner {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 0.14rem;
+    }
+
+    .history-details-btn {
+      white-space: nowrap;
+    }
+
+    .history-game-details {
+      margin-top: 0.55rem;
+      display: none;
+    }
+
+    .history-game-card {
+      border: 1px solid rgba(148,163,184,0.14);
+      background: rgba(2,6,23,0.45);
+      border-radius: 0.8rem;
+      padding: 0.45rem 0.55rem;
+    }
+
+    .history-game-card.expanded .history-game-details {
+      display: block;
+    }
+
+    .history-game-card.expanded .history-details-btn {
+      background: rgba(15,23,42,0.9);
+      color: var(--text-main);
+      border: 1px solid rgba(148,163,184,0.45);
+      box-shadow: none;
+    }
+
+
+    .history-running-item.podium-1 {
+      border-color: rgba(234,179,8,0.45);
+      background: linear-gradient(135deg, rgba(234,179,8,0.16), rgba(2,6,23,0.55));
+      box-shadow: 0 0 0 1px rgba(234,179,8,0.18) inset;
+    }
+
+    .history-running-item.podium-2 {
+      border-color: rgba(148,163,184,0.42);
+      background: linear-gradient(135deg, rgba(148,163,184,0.14), rgba(2,6,23,0.55));
+      box-shadow: 0 0 0 1px rgba(148,163,184,0.14) inset;
+    }
+
+    .history-running-item.podium-3 {
+      border-color: rgba(251,146,60,0.42);
+      background: linear-gradient(135deg, rgba(251,146,60,0.14), rgba(2,6,23,0.55));
+      box-shadow: 0 0 0 1px rgba(251,146,60,0.14) inset;
+    }
+
+    .history-running-item.podium-1 .history-rank {
+      background: rgba(234,179,8,0.18);
+      color: #fde68a;
+      border-color: rgba(234,179,8,0.42);
+    }
+
+    .history-running-item.podium-2 .history-rank {
+      background: rgba(148,163,184,0.18);
+      color: #e5e7eb;
+      border-color: rgba(148,163,184,0.38);
+    }
+
+    .history-running-item.podium-3 .history-rank {
+      background: rgba(251,146,60,0.18);
+      color: #fdba74;
+      border-color: rgba(251,146,60,0.4);
+    }
+
+    .history-running-item.podium-1 .history-player-total {
+      color: #fde68a;
+    }
+
+    .history-running-item.podium-2 .history-player-total {
+      color: #e5e7eb;
+    }
+
+    .history-running-item.podium-3 .history-player-total {
+      color: #fdba74;
+    }
+
+
+    .history-leaderboard-toolbar {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 0.35rem;
+    }
+
+    .history-running-list.minimal-mode {
+      gap: 0.22rem;
+    }
+
+    .history-running-item.minimal-row {
+      display: grid;
+      grid-template-columns: 2.5rem 1fr auto;
+      gap: 0.3rem;
+      align-items: center;
+      padding: 0.4rem 0.5rem;
+      border: 1px solid rgba(148,163,184,0.14);
+      background: rgba(2,6,23,0.45);
+      border-radius: 0.8rem;
+    }
+
+    .history-running-item.minimal-row .history-rank {
+      min-width: auto;
+    }
+
+    .history-running-main {
+      display: flex;
+      flex-direction: column;
+      gap: 0.08rem;
+    }
+
+    .history-running-item.minimal-row .history-player-total {
+      font-size: 0.95rem;
+    }
+
+    .history-extra-stats {
+      margin-top: 0.3rem;
+      padding-top: 0.3rem;
+      border-top: 1px solid rgba(148,163,184,0.1);
+      display: none;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+    }
+
+    .history-running-list.show-stats .history-extra-stats {
+      display: block;
+    }
+
+    .history-running-list.show-stats .history-running-item.minimal-row {
+      align-items: start;
+    }
+
+
+
+    .history-game-player-header {
+      display: grid;
+      grid-template-columns: 2.4rem 1fr auto;
+      gap: 0.3rem;
+      align-items: center;
+    }
+
+    .history-game-rank {
+      min-width: 1.9rem;
+      text-align: center;
+      padding: 0.08rem 0.18rem;
+      border-radius: 999px;
+      background: rgba(148,163,184,0.12);
+      color: var(--text-main);
+      border: 1px solid rgba(148,163,184,0.2);
+      font-size: 0.62rem;
+      font-weight: 700;
+    }
+
+    .history-game-player-name {
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+
+    .history-game-rounds {
+      margin-top: 0.18rem;
+      margin-left: 2.7rem;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.14rem 0.45rem;
+      align-items: start;
+    }
+
+    .history-game-round-column {
+      display: grid;
+      gap: 0.1rem;
+      min-width: 0;
+    }
+
+    .history-game-round-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.25rem;
+      font-size: 0.62rem;
+      color: var(--text-muted);
+      min-width: 0;
+    }
+
+    .history-game-round-value {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+    .history-game-round-label {
+      min-width: 0;
+      line-height: 1.15;
+    }
+
+
+    .history-game-no-rounds {
+      font-size: 0.6rem;
+      color: var(--text-muted);
+      padding-left: 2.7rem;
+      margin-top: 0.2rem;
+    }
+
+
+
+    .history-game-rounds-toggle-row {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 0.35rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .history-game-rounds-toggle {
+      white-space: nowrap;
+    }
+
+
+    .history-game-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.4rem;
+      margin-top: 0.35rem;
+      margin-bottom: 0.15rem;
+      flex-wrap: wrap;
+    }
+
+    .history-game-delete-btn {
+      white-space: nowrap;
+      padding: 0.18rem 0.5rem;
+      font-size: 0.64rem;
+      letter-spacing: 0.02em;
+      text-transform: none;
+      opacity: 0.82;
+      border-color: rgba(239,68,68,0.22);
+      color: rgba(248,113,113,0.92);
+    }
+
+    .history-game-delete-btn:hover {
+      opacity: 1;
+      border-color: rgba(239,68,68,0.34);
+    }
+
+    .history-game-rounds.collapsed {
+      display: none;
+    }
+
+    .history-game-no-rounds.collapsed {
+      display: none;
+    }
+
+
+    .history-game-player-header {
+      align-items: start;
+    }
+
+    .history-game-round-row {
+      line-height: 1.15;
+    }
+
+    .history-game-player strong {
+      font-size: 0.68rem;
+    }
+
+    @media (max-width: 420px) {
+      .history-game-rounds {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
+    @media (max-width: 640px) {
+      .history-game-rounds {
+        margin-left: 2.45rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.08rem 0.28rem;
+      }
+
+      .history-sections {
+        gap: 0.3rem;
+        max-height: min(66vh, 560px);
+      }
+
+      .history-block {
+        padding: 0.45rem;
+      }
+
+      .history-block-title {
+        margin-bottom: 0.3rem;
+      }
+
+      .history-running-item.minimal-row {
+        grid-template-columns: 2.2rem 1fr auto;
+        gap: 0.35rem;
+        padding: 0.36rem 0.42rem;
+      }
+
+      .history-rank {
+        padding: 0.12rem 0.22rem;
+        font-size: 0.62rem;
+      }
+
+      .history-player-name {
+        font-size: 0.76rem;
+      }
+
+      .history-player-total {
+        font-size: 0.88rem;
+      }
+
+      .history-extra-stats,
+      .history-game-player,
+      .history-game-date,
+      .history-game-winner {
+        font-size: 0.6rem;
+      }
+
+      .history-game-card {
+        padding: 0.4rem 0.45rem;
+      }
+
+      .history-game-summary {
+        gap: 0.4rem;
+        grid-template-columns: 1fr auto;
+      }
+
+      .history-details-btn {
+        grid-column: 1 / -1;
+        justify-self: end;
+      }
+    }
+
     @media (max-width: 640px) {
       header h1 { font-size: 1.25rem; }
-      .card { padding: 0.7rem; }
+      .card { padding: 0.55rem; }
       th, td { padding: 0.3rem 0.35rem; }
       .cell-input input[type="number"] { width: 3.4rem; }
       .settings-grid { grid-template-columns: 1.2fr auto; }
@@ -536,22 +901,72 @@
         Adjust players, names, decks, round limits, and which rules are used. These are saved on this device.
       </div>
 
+      <div class="settings-section">
+        <div class="settings-section-title">Game Log</div>
+        <div class="controls">
+          <div class="controls-group">
+            <button id="logGameBtn" type="button" class="ghost small">Log This Game</button>
+            <button id="showHistoryBtn" type="button" class="ghost small">Stats &amp; History</button>
+          </div>
+        </div>
+        <div class="settings-hint">
+          Save completed games to history and review running totals across all logged games.
+        </div>
+      </div>
+
+      <!-- Game mode subsection -->
+      <div class="settings-section">
+        <div class="settings-section-title">Game Mode</div>
+        <div class="controls" style="margin-bottom:0.35rem;">
+          <div class="controls-group">
+            <label for="gameModeSelect">Preset</label>
+            <select id="gameModeSelect">
+              <option value="long">Long Game</option>
+              <option value="short">Short Game</option>
+            </select>
+          </div>
+          <div class="controls-group">
+            <label for="playerCount">Players</label>
+            <input type="number" id="playerCount" min="2" max="8" value="4" />
+          </div>
+          <div class="controls-group">
+            <label for="deckCount">Decks</label>
+            <select id="deckCount">
+              <option value="1">1 deck</option>
+              <option value="2">2 decks</option>
+              <option value="3">3 decks</option>
+              <option value="4">4 decks</option>
+            </select>
+          </div>
+          <div class="controls-group">
+            <button id="applyModeBtn" type="button" class="ghost small">Apply Game Mode</button>
+          </div>
+        </div>
+        <div class="settings-hint">
+          Pick a preset, player count, and deck count here. Apply Game Mode loads the default round order and rules used. You can still customize the order and which rules are active below.
+        </div>
+        <p class="hint" id="cardRemovalHint"></p>
+      </div>
+
       <!-- Players subsection -->
       <div class="settings-section">
         <div class="settings-section-title">Players</div>
         <div class="controls">
           <div class="controls-group">
-            <label for="playerCount">Number of players</label>
-            <input type="number" id="playerCount" min="2" max="8" value="4" />
-          </div>
-          <div class="controls-group">
-            <button id="buildBtn" type="button">Apply Players</button>
             <button id="resetBtn" type="button" class="secondary">Reset Scores</button>
           </div>
         </div>
-        <p class="hint">Enter player names below. Low score wins.</p>
+        <p class="hint">Enter player names below. Player count is applied from the Game Mode section. Low score wins.</p>
         <div id="playerNamesContainer" class="settings-grid" style="margin-top:0.35rem;"></div>
-        <p class="hint" id="cardRemovalHint"></p>
+      </div>
+
+      <!-- Rules enabled / disabled subsection -->
+      <div class="settings-section">
+        <div class="settings-section-title">Rules in this game</div>
+        <div class="settings-grid" id="rulesGrid"></div>
+        <div class="settings-hint">
+          Set whether each rule is used and what order it appears in. The selected game mode loads the default setup first.
+        </div>
       </div>
 
       <!-- Deck / Round limits subsection -->
@@ -564,15 +979,6 @@
             </span>
           </div>
           <div class="settings-actions">
-            <label for="deckCount">
-              Decks
-              <select id="deckCount">
-                <option value="1">1 deck</option>
-                <option value="2">2 decks</option>
-                <option value="3">3 decks</option>
-                <option value="4">4 decks</option>
-              </select>
-            </label>
             <button id="restoreDefaultsBtn" type="button" class="ghost small">Restore Defaults</button>
           </div>
         </div>
@@ -580,18 +986,10 @@
         <div class="settings-grid" id="settingsGrid"></div>
 
         <div class="settings-hint">
-          Defaults are “per deck” × number of decks. Changing decks recalculates limits; then you can fine-tune per round.
+          Deck count is now controlled in Game Mode. Limits still scale from that deck selection, and you can fine-tune per round here.
         </div>
       </div>
 
-      <!-- Rules enabled / disabled subsection -->
-      <div class="settings-section">
-        <div class="settings-section-title">Rules in this game</div>
-        <div class="settings-grid" id="rulesGrid"></div>
-        <div class="settings-hint">
-          Uncheck rules you want to skip for a shorter game. Disabled rules disappear from the main table and from the All-of-the-Above grid.
-        </div>
-      </div>
     </section>
 
     <!-- SCORE TABLE -->
@@ -696,6 +1094,36 @@
       </div>
     </div>
 
+    <div class="score-summary-overlay hidden" id="historyOverlay">
+      <div class="score-summary-modal" role="dialog" aria-modal="true" aria-labelledby="historyTitle">
+        <div class="score-summary-header">
+          <div>
+            <div class="score-summary-title" id="historyTitle">Stats &amp; History</div>
+            <div class="score-summary-subtitle">Leaderboard first, then recent games. Tap Details to expand a game.</div>
+          </div>
+          <button id="closeHistoryBtn" type="button" class="secondary small">Close</button>
+        </div>
+
+        <div class="history-sections">
+          <div class="history-block">
+            <div class="history-block-title">Leaderboard</div>
+            <div class="history-running-list minimal-mode" id="historyRunningTotals"></div>
+            <div class="history-leaderboard-toolbar"><button id="toggleLeaderboardStatsBtn" type="button" class="ghost small">Show More Stats</button></div>
+          </div>
+
+          <div class="history-block">
+            <div class="history-block-title">Recent Games</div>
+            <div class="history-games-list" id="historyGamesList"></div>
+          </div>
+        </div>
+
+        <div class="history-actions">
+          <div class="history-status" id="historyStatusText">No games logged yet.</div>
+          <button id="clearHistoryBtn" type="button" class="ghost small">Clear History</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Footer line -->
     <div class="app-footer">
       <span>Cote Free Time Productions</span>
@@ -705,11 +1133,12 @@
 
   <script>
     (function () {
-      const STORAGE_KEY = "canadianSaladScores_v11";
-      const APP_VERSION = "v11";
+      const STORAGE_KEY = "canadianSaladScores_v13";
+      const HISTORY_STORAGE_KEY = "canadianSaladHistory_v12";
+      const APP_VERSION = "v13";
 
       // Rounds: defaultMaxCards is per-deck; maxCards is current total after deck scaling.
-      const rounds = [
+      const RULE_LIBRARY = [
         { name: "No RED Cards", description: "Each red card (♥ or ♦) = 5 pts", pointsPerCard: 5, defaultMaxCards: 26, maxCards: 26 },
         { name: "No EVEN Cards", description: "Each even-ranked card (2,4,6,8,10,Q) = 5 pts", pointsPerCard: 5, defaultMaxCards: 24, maxCards: 24 },
         { name: "No Tricks", description: "Each trick taken = 10 pts", pointsPerCard: 10, defaultMaxCards: 13, maxCards: 13 },
@@ -724,20 +1153,68 @@
         { name: "All of the Above (per-rule)", description: "Totals from the All-of-the-Above details grid.", pointsPerCard: null, defaultMaxCards: null, maxCards: null }
       ];
 
+      const GAME_PRESETS = {
+        long: {
+          label: "Long Game",
+          rounds: RULE_LIBRARY.map((round) => ({ ...round })),
+          includedRules: RULE_LIBRARY.map(() => true),
+          roundOrder: RULE_LIBRARY.map((_, idx) => idx + 1)
+        },
+        short: {
+          label: "Short Game",
+          rounds: RULE_LIBRARY.map((round, idx) => {
+            const clone = { ...round };
+            if (idx === 2) {
+              clone.description = "Each trick won = 10 pts";
+              clone.pointsPerCard = 10;
+              clone.defaultMaxCards = 13;
+              clone.maxCards = 13;
+            } else if (idx === 3) {
+              clone.description = "Each ♥ = 10 pts";
+              clone.pointsPerCard = 10;
+              clone.defaultMaxCards = 13;
+              clone.maxCards = 13;
+            } else if (idx === 7) {
+              clone.description = "Each Queen = 25 pts";
+              clone.pointsPerCard = 25;
+              clone.defaultMaxCards = 4;
+              clone.maxCards = 4;
+            } else if (idx === 9) {
+              clone.description = "If you took K♠, enter 1 = 100 pts";
+              clone.pointsPerCard = 100;
+              clone.defaultMaxCards = 1;
+              clone.maxCards = 1;
+            } else if (idx === 10) {
+              clone.description = "If you took last trick, enter 1 = 100 pts";
+              clone.pointsPerCard = 100;
+              clone.defaultMaxCards = 1;
+              clone.maxCards = 1;
+            } else if (idx === 11) {
+              clone.description = "Totals from the short-game All-of-the-Above details grid.";
+            }
+            return clone;
+          }),
+          includedRules: RULE_LIBRARY.map((_, idx) => [2, 3, 7, 9, 10, 11].includes(idx)),
+          roundOrder: [6, 7, 1, 2, 8, 9, 10, 3, 11, 4, 5, 12]
+        }
+      };
+
+      let gameMode = "long";
+      let rounds = GAME_PRESETS.long.rounds.map((round) => ({ ...round }));
+      let includedRules = GAME_PRESETS.long.includedRules.slice();
+      let roundOrder = GAME_PRESETS.long.roundOrder.slice();
+
       const playerColors = [
         "#f97316", "#22c55e", "#3b82f6", "#e11d48",
         "#a855f7", "#14b8a6", "#eab308", "#f97373"
       ];
 
-      // By default, all first 11 rules enabled; All of the Above always enabled
-      let includedRules = rounds.map(() => true);
 
       const headerRow = document.getElementById("headerRow");
       const headerRowSticky = document.getElementById("headerRowSticky");
       const roundsBody = document.getElementById("roundsBody");
 
       const playerCountInput = document.getElementById("playerCount");
-      const buildBtn = document.getElementById("buildBtn");
       const resetBtn = document.getElementById("resetBtn");
 
       const scoreTable = document.getElementById("scoreTable");
@@ -755,6 +1232,8 @@
       const allHeadRowSticky = document.getElementById("allHeadRowSticky");
       const allRulesBody = document.getElementById("allRulesBody");
       const rulesGrid = document.getElementById("rulesGrid");
+      const gameModeSelect = document.getElementById("gameModeSelect");
+      const applyModeBtn = document.getElementById("applyModeBtn");
 
       const tableBodyScroll = document.getElementById("tableBodyScroll");
       const tableHeaderScroll = document.getElementById("tableHeaderScroll");
@@ -766,10 +1245,76 @@
       const scoreSummaryOverlay = document.getElementById("scoreSummaryOverlay");
       const scoreSummaryList = document.getElementById("scoreSummaryList");
       const closeScoreSummaryBtn = document.getElementById("closeScoreSummaryBtn");
+      const logGameBtn = document.getElementById("logGameBtn");
+      const showHistoryBtn = document.getElementById("showHistoryBtn");
+      const historyOverlay = document.getElementById("historyOverlay");
+      const closeHistoryBtn = document.getElementById("closeHistoryBtn");
+      const historyRunningTotals = document.getElementById("historyRunningTotals");
+      const historyGamesList = document.getElementById("historyGamesList");
+      const clearHistoryBtn = document.getElementById("clearHistoryBtn");
+      const historyStatusText = document.getElementById("historyStatusText");
+      const toggleLeaderboardStatsBtn = document.getElementById("toggleLeaderboardStatsBtn");
       if (versionLabel) versionLabel.textContent = APP_VERSION;
+      if (gameModeSelect) gameModeSelect.value = gameMode;
 
       let playerCount = 4;
       let deckCount = 1;
+      let showLeaderboardStats = false;
+
+      function clonePresetRounds(mode) {
+        const preset = GAME_PRESETS[mode] || GAME_PRESETS.long;
+        return preset.rounds.map((round) => ({ ...round }));
+      }
+
+      function applyGamePreset(mode) {
+        const preset = GAME_PRESETS[mode] || GAME_PRESETS.long;
+        gameMode = mode;
+        rounds = clonePresetRounds(mode);
+        includedRules = preset.includedRules.slice();
+        roundOrder = preset.roundOrder.slice();
+        if (gameModeSelect) gameModeSelect.value = gameMode;
+      }
+
+      function getActiveScoringRuleIndices() {
+        return rounds
+          .map((_, idx) => idx)
+          .filter((idx) => idx < rounds.length - 1 && includedRules[idx])
+          .sort((a, b) => (roundOrder[a] || 999) - (roundOrder[b] || 999) || a - b);
+      }
+
+      function getVisibleRoundIndices() {
+        const visible = getActiveScoringRuleIndices();
+        if (includedRules[rounds.length - 1] !== false) visible.push(rounds.length - 1);
+        return visible;
+      }
+
+      function normalizeRoundOrder() {
+        const scoringCount = rounds.length - 1;
+        const entries = Array.from({ length: scoringCount }, (_, idx) => ({
+          idx,
+          order: parseInt(roundOrder[idx] || idx + 1, 10)
+        }));
+
+        entries.sort((a, b) => a.order - b.order || a.idx - b.idx);
+        entries.forEach((entry, position) => {
+          roundOrder[entry.idx] = position + 1;
+        });
+      }
+
+      function refreshGameLayout(existingNames = null) {
+        buildPlayerHeaders();
+        buildRoundsBody();
+        buildSettingsUI();
+        buildRulesUI();
+        buildAllHandGrid();
+        buildPlayerNameInputs(existingNames || getCurrentPlayerNamesFromSettings());
+        updateCardRemovalHint();
+        updateAllHandTotals();
+        updateScores();
+        updateSettingsInputsFromRounds();
+        saveState();
+        syncStickyHeaderWidths();
+      }
 
       /* ---------------------- Player Names Helpers ---------------------- */
 
@@ -828,36 +1373,92 @@
 
       /* ---------------------- Card Removal Hint ---------------------- */
 
+      function getRecommendedDeckCount(pc) {
+        if (pc >= 6) return 2;
+        return 1;
+      }
+
+      function getRecommendedRoundLimits(pc) {
+        const byPlayerCount = {
+          2: {
+            0: 26, 1: 24, 2: 13, 3: 13, 4: 12, 5: 4, 6: 4, 7: 4, 8: 3, 9: 1, 10: 1
+          },
+          3: {
+            0: 26, 1: 18, 2: 13, 3: 13, 4: 9, 5: 3, 6: 3, 7: 3, 8: 3, 9: 1, 10: 1
+          },
+          4: {
+            0: 26, 1: 24, 2: 13, 3: 13, 4: 12, 5: 4, 6: 4, 7: 4, 8: 3, 9: 1, 10: 1
+          },
+          5: {
+            0: 25, 1: 22, 2: 10, 3: 13, 4: 12, 5: 4, 6: 4, 7: 4, 8: 3, 9: 1, 10: 1
+          },
+          6: {
+            0: 39, 1: 36, 2: 13, 3: 26, 4: 18, 5: 6, 6: 6, 7: 6, 8: 5, 9: 2, 10: 1
+          },
+          7: {
+            0: 52, 1: 42, 2: 13, 3: 26, 4: 21, 5: 7, 6: 7, 7: 7, 8: 6, 9: 2, 10: 1
+          },
+          8: {
+            0: 52, 1: 48, 2: 13, 3: 26, 4: 24, 5: 8, 6: 8, 7: 8, 8: 6, 9: 2, 10: 1
+          }
+        };
+
+        return byPlayerCount[pc] || byPlayerCount[4];
+      }
+
+      function applyRecommendedRoundLimits(pc) {
+        if (gameMode === "short") {
+          const shortDefaults = { 2: 13, 3: 13, 7: 4, 9: 1, 10: 1 };
+          rounds.forEach((round, idx) => {
+            if (shortDefaults[idx] != null) {
+              round.maxCards = shortDefaults[idx];
+            }
+          });
+          return;
+        }
+
+        const recommended = getRecommendedRoundLimits(pc);
+        rounds.forEach((round, idx) => {
+          if (recommended[idx] != null) {
+            round.maxCards = recommended[idx];
+          }
+        });
+      }
+
       function updateCardRemovalHint() {
         if (!cardRemovalHint) return;
 
+        const pc = clampPlayerCount(parseInt(playerCountInput.value || playerCount, 10));
         let msg = "";
-        const pc = playerCount;
-        const dc = deckCount;
 
-        if (pc === 3) {
+        if (pc === 2) {
+          msg = "2 players: use 1 deck. No cards removed. Deal the hand size you prefer for your house rules.";
+        } else if (pc === 3) {
           msg = "3 players: use 1 deck. Remove all clubs (13 cards) before dealing. Each player gets 13 cards.";
-          if (dc !== 1) msg += " Tip: set Decks to 1 above.";
         } else if (pc === 4) {
           msg = "4 players: use 1 deck. No cards removed (perfect deal: 13 cards each).";
-          if (dc !== 1) msg += " Tip: set Decks to 1 above.";
         } else if (pc === 5) {
           msg = "5 players: use 1 deck. Remove the 2♣ and 2♦ (2 cards total), then deal 10 cards to each player.";
-          if (dc !== 1) msg += " Tip: set Decks to 1 above.";
         } else if (pc === 6) {
           msg = "6 players: use 2 decks. Remove one full suit of clubs and one full suit of diamonds (26 cards total), then deal 13 cards to each player.";
-          if (dc !== 2) msg += " Tip: set Decks to 2 above.";
         } else if (pc === 7) {
           msg = "7 players: use 2 decks. Remove one full suit of clubs (13 cards), then deal 13 cards to each player.";
-          if (dc !== 2) msg += " Tip: set Decks to 2 above.";
         } else if (pc === 8) {
           msg = "8 players: use 2 decks. No cards removed (perfect deal: 13 cards each).";
-          if (dc !== 2) msg += " Tip: set Decks to 2 above.";
         } else {
           msg = "No specific card-removal rule for this player count. Use any deck setup you like.";
         }
 
         cardRemovalHint.textContent = msg;
+      }
+
+      function syncDeckCountFromPlayerInput() {
+        const pc = clampPlayerCount(parseInt(playerCountInput.value, 10));
+        if (playerCountInput.value !== String(pc)) playerCountInput.value = String(pc);
+        const recommendedDeckCount = getRecommendedDeckCount(pc);
+        deckCount = recommendedDeckCount;
+        if (deckCountSelect) deckCountSelect.value = String(recommendedDeckCount);
+        updateCardRemovalHint();
       }
 
       /* ---------------------- Rule Toggles UI ---------------------- */
@@ -866,46 +1467,84 @@
         if (!rulesGrid) return;
         rulesGrid.innerHTML = "";
 
-        for (let idx = 0; idx < rounds.length - 1; idx++) {
-          const round = rounds[idx];
+        const scoringRuleEntries = Array.from({ length: rounds.length - 1 }, (_, idx) => ({
+          idx,
+          round: rounds[idx],
+          order: roundOrder[idx] || idx + 1
+        })).sort((a, b) => a.order - b.order || a.idx - b.idx);
+
+        scoringRuleEntries.forEach((entry, listIndex) => {
+          const idx = entry.idx;
+          const round = entry.round;
 
           const labelDiv = document.createElement("div");
           labelDiv.className = "settings-round-label";
-          labelDiv.innerHTML = `<span>${idx + 1}. ${round.name}</span>`;
+          labelDiv.innerHTML = `<span>${listIndex + 1}. ${round.name}</span>`;
 
           const wrapper = document.createElement("div");
-          wrapper.style.display = "flex";
-          wrapper.style.alignItems = "center";
-          wrapper.style.justifyContent = "flex-end";
-          wrapper.style.gap = "0.35rem";
+          wrapper.className = "rule-config-controls";
+
+          const orderInput = document.createElement("input");
+          orderInput.type = "number";
+          orderInput.min = "1";
+          orderInput.max = String(rounds.length - 1);
+          orderInput.value = String(roundOrder[idx] || idx + 1);
+          orderInput.className = "rule-order-input";
+          orderInput.title = "Display order";
+
+          orderInput.addEventListener("change", () => {
+            let desired = parseInt(orderInput.value || String(idx + 1), 10);
+            if (isNaN(desired) || desired < 1) desired = 1;
+            if (desired > rounds.length - 1) desired = rounds.length - 1;
+
+            const current = roundOrder[idx] || idx + 1;
+            roundOrder = roundOrder.map((value, orderIdx) => {
+              if (orderIdx === idx) return desired;
+              if (desired > current && value > current && value <= desired) return value - 1;
+              if (desired < current && value >= desired && value < current) return value + 1;
+              return value;
+            });
+            roundOrder[idx] = desired;
+            normalizeRoundOrder();
+
+            buildRulesUI();
+            buildRoundsBody();
+            buildAllHandGrid();
+            updateAllHandTotals();
+            updateScores();
+            saveState();
+            syncStickyHeaderWidths();
+          });
+
+          const orderLabel = document.createElement("label");
+          orderLabel.innerHTML = `Order`;
+          orderLabel.appendChild(orderInput);
 
           const checkbox = document.createElement("input");
           checkbox.type = "checkbox";
           checkbox.dataset.ruleToggle = String(idx);
           checkbox.checked = includedRules[idx];
 
-          const span = document.createElement("span");
-          span.style.fontSize = "0.75rem";
-          span.style.color = "var(--text-muted)";
-          span.textContent = "Use";
+          const useLabel = document.createElement("label");
+          useLabel.innerHTML = `Use`;
+          useLabel.prepend(checkbox);
 
           checkbox.addEventListener("change", () => {
             includedRules[idx] = checkbox.checked;
-            saveState();
-
             buildRoundsBody();
             buildAllHandGrid();
             updateAllHandTotals();
             updateScores();
+            saveState();
             syncStickyHeaderWidths();
           });
 
-          wrapper.appendChild(checkbox);
-          wrapper.appendChild(span);
+          wrapper.appendChild(orderLabel);
+          wrapper.appendChild(useLabel);
 
           rulesGrid.appendChild(labelDiv);
           rulesGrid.appendChild(wrapper);
-        }
+        });
       }
 
       /* ---------------------- LocalStorage Helpers ---------------------- */
@@ -918,7 +1557,9 @@
           roundMaxCards: [],
           deckCount,
           allHand: {},
-          includedRules: includedRules.slice()
+          includedRules: includedRules.slice(),
+          roundOrder: roundOrder.slice(),
+          gameMode
         };
 
         const inputs = scoreTable.querySelectorAll("tbody input[type='number']");
@@ -953,6 +1594,8 @@
       function applyLoadedState(state) {
         if (!state) return;
 
+        applyGamePreset(state.gameMode || "long");
+
         if (state.deckCount != null) {
           const dc = parseInt(state.deckCount, 10);
           if (!isNaN(dc) && dc >= 1) deckCount = dc;
@@ -972,12 +1615,15 @@
 
         if (Array.isArray(state.includedRules)) {
           includedRules = state.includedRules.slice();
-        } else {
-          includedRules = rounds.map(() => true);
+        }
+
+        if (Array.isArray(state.roundOrder) && state.roundOrder.length === rounds.length) {
+          roundOrder = state.roundOrder.slice();
         }
 
         playerCount = state.playerCount || 4;
         playerCountInput.value = playerCount;
+        if (gameModeSelect) gameModeSelect.value = gameMode;
 
         buildPlayerHeaders();
         buildRoundsBody();
@@ -1022,8 +1668,14 @@
       }
 
       function restoreDefaults() {
-        applyDeckCountToDefaults();
+        applyGamePreset(gameMode);
+        if (gameMode === "long") {
+          applyRecommendedRoundLimits(playerCount);
+        } else {
+          applyRecommendedRoundLimits(playerCount);
+        }
         updateSettingsInputsFromRounds();
+        buildRulesUI();
         enforceAllRoundLimits();
         enforceAllHandLimitsForAll();
         updateAllHandTotals();
@@ -1135,10 +1787,10 @@
 
       function buildRoundsBody() {
         roundsBody.innerHTML = "";
+        const visibleRoundIndices = getVisibleRoundIndices();
 
-        rounds.forEach((round, rIndex) => {
-          if (rIndex < rounds.length - 1 && !includedRules[rIndex]) return;
-
+        visibleRoundIndices.forEach((rIndex, displayIndex) => {
+          const round = rounds[rIndex];
           const tr = document.createElement("tr");
 
           const th = document.createElement("th");
@@ -1149,7 +1801,7 @@
 
           const idxSpan = document.createElement("span");
           idxSpan.className = "round-index";
-          idxSpan.textContent = String(rIndex + 1);
+          idxSpan.textContent = String(displayIndex + 1);
 
           const titleText = document.createElement("span");
           titleText.textContent = round.name;
@@ -1218,7 +1870,6 @@
       }
 
       function buildAllHandGrid() {
-        // build BOTH header rows (hidden + sticky clone)
         while (allHeadRow.children.length > 1) allHeadRow.removeChild(allHeadRow.lastElementChild);
         while (allHeadRowSticky.children.length > 1) allHeadRowSticky.removeChild(allHeadRowSticky.lastElementChild);
 
@@ -1234,18 +1885,16 @@
           allHeadRowSticky.appendChild(makeTh());
         }
 
-        // Body
         allRulesBody.innerHTML = "";
-        for (let rIndex = 0; rIndex < rounds.length - 1; rIndex++) {
-          if (!includedRules[rIndex]) continue;
-
+        const activeRules = getActiveScoringRuleIndices();
+        activeRules.forEach((rIndex, displayIndex) => {
           const round = rounds[rIndex];
           const tr = document.createElement("tr");
 
           const th = document.createElement("th");
           th.className = "round-header";
           th.innerHTML =
-            `<div class="round-title">${rIndex + 1}. ${round.name}</div>` +
+            `<div class="round-title">${displayIndex + 1}. ${round.name}</div>` +
             `<div class="round-desc">×${round.pointsPerCard} pts</div>` +
             `<div class="round-total all-round-total" data-all-round="${rIndex}"></div>`;
           tr.appendChild(th);
@@ -1280,18 +1929,16 @@
           }
 
           allRulesBody.appendChild(tr);
-        }
+        });
 
-        // init indicators
-        for (let rIndex = 0; rIndex < rounds.length - 1; rIndex++) {
-          if (!includedRules[rIndex]) continue;
+        activeRules.forEach((rIndex) => {
           const round = rounds[rIndex];
           const indicator = document.querySelector(`.all-round-total[data-all-round="${rIndex}"]`);
-          if (!indicator || round.maxCards == null) continue;
+          if (!indicator || round.maxCards == null) return;
           indicator.classList.remove("ok", "incomplete");
           indicator.textContent = `0 / ${round.maxCards} cards`;
           indicator.classList.add("incomplete");
-        }
+        });
 
         syncHeaderNamesFromSettings();
       }
@@ -1589,6 +2236,364 @@
         scoreSummaryOverlay.classList.add("hidden");
       }
 
+      function getHistory() {
+        const raw = localStorage.getItem(HISTORY_STORAGE_KEY);
+        if (!raw) return [];
+        try {
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      }
+
+      function saveHistory(history) {
+        localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history));
+      }
+
+      function formatHistoryDate(value) {
+        const dt = new Date(value);
+        if (Number.isNaN(dt.getTime())) return "Unknown date";
+        return dt.toLocaleString([], {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit"
+        });
+      }
+
+      function buildRunningTotals(history) {
+        const totalsMap = new Map();
+
+        history.forEach((game) => {
+          (game.players || []).forEach((player) => {
+            const rawName = typeof player.name === "string" ? player.name.trim() : "";
+            const name = rawName || "Unknown Player";
+            const score = Number(player.score) || 0;
+
+            if (!totalsMap.has(name)) {
+              totalsMap.set(name, { name, total: 0, games: 0, wins: 0 });
+            }
+
+            const entry = totalsMap.get(name);
+            entry.total += score;
+            entry.games += 1;
+          });
+
+          (game.winnerNames || []).forEach((winnerName) => {
+            const name = (winnerName || "").trim() || "Unknown Player";
+            if (!totalsMap.has(name)) {
+              totalsMap.set(name, { name, total: 0, games: 0, wins: 0 });
+            }
+            totalsMap.get(name).wins += 1;
+          });
+        });
+
+        return Array.from(totalsMap.values()).sort((a, b) =>
+          a.total - b.total ||
+          b.wins - a.wins ||
+          a.name.localeCompare(b.name)
+        );
+      }
+
+      function getAverageFinish(name, history) {
+        let totalRank = 0;
+        let count = 0;
+
+        history.forEach((game) => {
+          const players = Array.isArray(game.players) ? [...game.players] : [];
+          players.sort((a, b) => (Number(a.score) || 0) - (Number(b.score) || 0) || String(a.name).localeCompare(String(b.name)));
+
+          let currentRank = 1;
+          for (let i = 0; i < players.length; i++) {
+            if (i > 0 && (Number(players[i].score) || 0) !== (Number(players[i - 1].score) || 0)) {
+              currentRank = i + 1;
+            }
+            if ((players[i].name || "") === name) {
+              totalRank += currentRank;
+              count += 1;
+              break;
+            }
+          }
+        });
+
+        if (!count) return "—";
+        return (totalRank / count).toFixed(1);
+      }
+
+      function renderHistory() {
+        if (!historyRunningTotals || !historyGamesList || !historyStatusText) return;
+
+        const history = getHistory();
+        const running = buildRunningTotals(history);
+
+        historyRunningTotals.innerHTML = "";
+        historyGamesList.innerHTML = "";
+
+        if (!history.length) {
+          historyRunningTotals.innerHTML = '<div class="score-summary-empty">No games logged yet.</div>';
+          historyGamesList.innerHTML = '<div class="score-summary-empty">Log a finished game to build your history.</div>';
+          historyStatusText.textContent = "No games logged yet.";
+          return;
+        }
+
+        historyStatusText.textContent = "";
+
+        historyRunningTotals.classList.toggle("show-stats", showLeaderboardStats);
+        if (toggleLeaderboardStatsBtn) {
+          toggleLeaderboardStatsBtn.textContent = showLeaderboardStats ? "Hide More Stats" : "Show More Stats";
+        }
+
+        running.forEach((entry, index) => {
+          const item = document.createElement("div");
+          item.className = "history-running-item minimal-row";
+          item.innerHTML = `
+            <div class="history-rank">#${index + 1}</div>
+            <div class="history-running-main">
+              <div class="history-player-name">${entry.name}</div>
+              <div class="history-extra-stats">
+                ${entry.wins} win${entry.wins === 1 ? "" : "s"} · ${entry.games} game${entry.games === 1 ? "" : "s"} · Avg finish ${getAverageFinish(entry.name, history)}
+              </div>
+            </div>
+            <div class="history-player-total">${entry.total}</div>
+          `;
+          historyRunningTotals.appendChild(item);
+        });
+
+        history.forEach((game, index) => {
+          const card = document.createElement("div");
+          card.className = "history-game-card";
+
+          const winnersText = (game.winnerNames || []).length
+            ? `Winner${game.winnerNames.length > 1 ? "s" : ""}: ${game.winnerNames.join(", ")}`
+            : "No winner recorded";
+
+          card.innerHTML = `
+            <div class="history-game-summary">
+              <div>
+                <div class="history-game-title">Game ${history.length - index}</div>
+                <div class="history-game-winner">${winnersText}</div>
+              </div>
+              <div class="history-game-date">${formatHistoryDate(game.loggedAt)}</div>
+              <button type="button" class="ghost small history-details-btn">Details</button>
+            </div>
+            <div class="history-game-details"></div>
+          `;
+
+          const details = card.querySelector(".history-game-details");
+
+          const gameToggleRow = document.createElement("div");
+          gameToggleRow.className = "history-game-rounds-toggle-row";
+
+          const gameToggleBtn = document.createElement("button");
+          gameToggleBtn.type = "button";
+          gameToggleBtn.className = "ghost small history-game-rounds-toggle";
+          gameToggleBtn.textContent = "Show Round Breakdown";
+          gameToggleRow.appendChild(gameToggleBtn);
+          details.appendChild(gameToggleRow);
+
+          (game.players || []).forEach((player, idx) => {
+            const row = document.createElement("div");
+            row.className = "history-game-player";
+
+            const rankLabel = player.rank ? `#${player.rank}` : `#${idx + 1}`;
+            row.innerHTML = `
+              <div class="history-game-player-header">
+                <span class="history-game-rank">${rankLabel}</span>
+                <span class="history-game-player-name">${player.name}</span>
+                <strong>${player.score}</strong>
+              </div>
+            `;
+
+            if (idx === (game.players || []).length - 1) {
+              const deleteRow = document.createElement("div");
+              deleteRow.className = "history-game-actions";
+
+              const deleteGameBtn = document.createElement("button");
+              deleteGameBtn.type = "button";
+              deleteGameBtn.className = "ghost small history-game-delete-btn";
+              deleteGameBtn.textContent = "Delete Game";
+              deleteRow.appendChild(deleteGameBtn);
+              row.appendChild(deleteRow);
+
+              deleteGameBtn.addEventListener("click", () => {
+                const confirmed = window.confirm("Delete this logged game?");
+                if (!confirmed) return;
+
+                const history = getHistory();
+                history.splice(index, 1);
+                saveHistory(history);
+                renderHistory();
+              });
+            }
+
+            if (Array.isArray(player.rounds) && player.rounds.length) {
+              const roundsWrap = document.createElement("div");
+              roundsWrap.className = "history-game-rounds collapsed";
+
+              const leftColumn = document.createElement("div");
+              leftColumn.className = "history-game-round-column";
+
+              const rightColumn = document.createElement("div");
+              rightColumn.className = "history-game-round-column";
+
+              player.rounds.forEach((round, roundIndex) => {
+                const roundRow = document.createElement("div");
+                roundRow.className = "history-game-round-row";
+                const formattedLabel = String(round.label || "").replace(/^(\d+)\s+/, "$1 - ");
+                roundRow.innerHTML = `
+                  <span class="history-game-round-label">${formattedLabel}</span>
+                  <span class="history-game-round-value">${round.value} pts</span>
+                `;
+
+                if (roundIndex < 6) {
+                  leftColumn.appendChild(roundRow);
+                } else {
+                  rightColumn.appendChild(roundRow);
+                }
+              });
+
+              roundsWrap.appendChild(leftColumn);
+              roundsWrap.appendChild(rightColumn);
+              row.appendChild(roundsWrap);
+            } else {
+              const noRounds = document.createElement("div");
+              noRounds.className = "history-game-no-rounds";
+              noRounds.textContent = "Round-by-round details not available for this older logged game.";
+              row.appendChild(noRounds);
+            }
+
+            details.appendChild(row);
+          });
+
+          gameToggleBtn.addEventListener("click", () => {
+            const roundSections = Array.from(card.querySelectorAll(".history-game-rounds"));
+            if (!roundSections.length) return;
+
+            const shouldExpand = roundSections.some((section) => section.classList.contains("collapsed"));
+
+            roundSections.forEach((section) => {
+              section.classList.toggle("collapsed", !shouldExpand);
+            });
+
+            gameToggleBtn.textContent = shouldExpand ? "Hide Round Breakdown" : "Show Round Breakdown";
+          });
+
+          const detailsBtn = card.querySelector(".history-details-btn");
+          detailsBtn.addEventListener("click", () => {
+            const expanded = card.classList.toggle("expanded");
+            detailsBtn.textContent = expanded ? "Hide Details" : "Details";
+          });
+
+          historyGamesList.appendChild(card);
+        });
+      }
+
+      function openHistory() {
+        if (!historyOverlay) return;
+        renderHistory();
+        historyOverlay.classList.remove("hidden");
+      }
+
+      function closeHistory() {
+        if (!historyOverlay) return;
+        historyOverlay.classList.add("hidden");
+      }
+
+      function getLoggedRoundRows() {
+        const visibleRows = Array.from(roundsBody.querySelectorAll("tr"));
+
+        return visibleRows.map((row, idx) => {
+          const headerCell = row.querySelector("th.round-header");
+          const titleEl = headerCell ? headerCell.querySelector(".round-title") : null;
+          const label = titleEl ? titleEl.textContent.replace(/\s+/g, " ").trim() : `Round ${idx + 1}`;
+          const inputs = Array.from(row.querySelectorAll('input[data-round]'));
+          const values = inputs.map((input) => {
+            const raw = parseInt(input.value || "0", 10);
+            return isNaN(raw) ? 0 : raw;
+          });
+
+          return { label, values };
+        });
+      }
+
+      function getRanksForEntries(entries) {
+        const sorted = entries.map((entry, idx) => ({ ...entry, _idx: idx }))
+          .sort((a, b) => a.score - b.score || a.name.localeCompare(b.name));
+
+        const rankByOriginal = new Array(entries.length).fill(0);
+        let currentRank = 1;
+
+        for (let i = 0; i < sorted.length; i++) {
+          if (i > 0 && sorted[i].score !== sorted[i - 1].score) {
+            currentRank = i + 1;
+          }
+          rankByOriginal[sorted[i]._idx] = currentRank;
+        }
+
+        return rankByOriginal;
+      }
+
+      function logCurrentGame() {
+        const names = getCurrentPlayerNamesFromSettings();
+        const totals = getPlayerTotals();
+
+        if (!totals.length) {
+          alert("No players found to log.");
+          return;
+        }
+
+        const hasAnyScore = totals.some((total) => total !== 0);
+        if (!hasAnyScore) {
+          alert("Enter some scores before logging a game.");
+          return;
+        }
+
+        const roundRows = getLoggedRoundRows();
+
+        const entries = totals.map((score, idx) => ({
+          name: names[idx] || `Player ${idx + 1}`,
+          score,
+          rounds: roundRows.map((round, roundIdx) => {
+            const rawValue = round.values[idx] || 0;
+            const roundDef = rounds[roundIdx];
+            const points = roundDef && roundDef.pointsPerCard != null
+              ? rawValue * roundDef.pointsPerCard
+              : rawValue;
+
+            return {
+              label: round.label,
+              value: points
+            };
+          })
+        }));
+
+        const ranks = getRanksForEntries(entries);
+        entries.forEach((entry, idx) => {
+          entry.rank = ranks[idx];
+        });
+
+        const sortedEntries = [...entries].sort((a, b) => a.score - b.score || a.name.localeCompare(b.name));
+        const minScore = Math.min(...sortedEntries.map((entry) => entry.score));
+        const winnerNames = sortedEntries.filter((entry) => entry.score === minScore).map((entry) => entry.name);
+
+        const history = getHistory();
+        history.unshift({
+          loggedAt: new Date().toISOString(),
+          players: sortedEntries,
+          winnerNames
+        });
+        saveHistory(history);
+        renderHistory();
+        alert("Game logged to history.");
+      }
+
+      function clearHistory() {
+        localStorage.removeItem(HISTORY_STORAGE_KEY);
+        renderHistory();
+      }
+
       function updatePlaces(totals) {
         const badges = document.querySelectorAll(".player-place");
         if (!badges || badges.length === 0) return;
@@ -1775,27 +2780,6 @@
 
       /* ---------------------- Event Setup ---------------------- */
 
-      buildBtn.addEventListener("click", () => {
-        const desired = clampPlayerCount(parseInt(playerCountInput.value, 10));
-        const existingNames = getCurrentPlayerNamesFromSettings();
-        playerCount = desired;
-        playerCountInput.value = desired;
-
-        buildPlayerHeaders();
-        buildRoundsBody();
-        buildSettingsUI();
-        buildRulesUI();
-        buildAllHandGrid();
-        buildPlayerNameInputs(existingNames);
-        updateCardRemovalHint();
-
-        enforceAllRoundLimits();
-        enforceAllHandLimitsForAll();
-        updateAllHandTotals();
-        saveState();
-        syncStickyHeaderWidths();
-      });
-
       resetBtn.addEventListener("click", resetScores);
 
       restoreDefaultsBtn.addEventListener("click", () => {
@@ -1806,7 +2790,11 @@
         const dc = parseInt(deckCountSelect.value, 10);
         deckCount = !isNaN(dc) && dc >= 1 ? dc : 1;
 
-        applyDeckCountToDefaults();
+        if (gameMode === "long") {
+          applyDeckCountToDefaults();
+        } else {
+          applyRecommendedRoundLimits(playerCount);
+        }
         updateSettingsInputsFromRounds();
         enforceAllRoundLimits();
         enforceAllHandLimitsForAll();
@@ -1817,14 +2805,73 @@
         syncStickyHeaderWidths();
       });
 
+      playerCountInput.addEventListener("input", () => {
+        syncDeckCountFromPlayerInput();
+      });
+
+      applyModeBtn.addEventListener("click", () => {
+        const desired = clampPlayerCount(parseInt(playerCountInput.value, 10));
+        const existingNames = getCurrentPlayerNamesFromSettings();
+        playerCount = desired;
+        playerCountInput.value = desired;
+
+        applyGamePreset(gameModeSelect.value || "long");
+        normalizeRoundOrder();
+
+        const selectedDeckCount = parseInt(deckCountSelect.value, 10);
+        if (gameMode === "long") {
+          deckCount = !isNaN(selectedDeckCount) && selectedDeckCount >= 1
+            ? selectedDeckCount
+            : getRecommendedDeckCount(playerCount);
+          deckCountSelect.value = String(deckCount);
+        } else {
+          deckCount = !isNaN(selectedDeckCount) && selectedDeckCount >= 1
+            ? selectedDeckCount
+            : 1;
+          deckCountSelect.value = String(deckCount);
+        }
+
+        applyRecommendedRoundLimits(playerCount);
+        buildPlayerHeaders();
+        buildRoundsBody();
+        buildSettingsUI();
+        buildRulesUI();
+        buildAllHandGrid();
+        buildPlayerNameInputs(existingNames);
+        updateCardRemovalHint();
+        enforceAllRoundLimits();
+        enforceAllHandLimitsForAll();
+        updateAllHandTotals();
+        updateScores();
+        saveState();
+        syncStickyHeaderWidths();
+      });
+
       showScoreSummaryBtn.addEventListener("click", openScoreSummary);
       closeScoreSummaryBtn.addEventListener("click", closeScoreSummary);
+      logGameBtn.addEventListener("click", logCurrentGame);
+      showHistoryBtn.addEventListener("click", openHistory);
+      closeHistoryBtn.addEventListener("click", closeHistory);
+      clearHistoryBtn.addEventListener("click", clearHistory);
+      if (toggleLeaderboardStatsBtn) {
+        toggleLeaderboardStatsBtn.addEventListener("click", () => {
+          showLeaderboardStats = !showLeaderboardStats;
+          renderHistory();
+        });
+      }
+
       scoreSummaryOverlay.addEventListener("click", (e) => {
         if (e.target === scoreSummaryOverlay) closeScoreSummary();
+      });
+      historyOverlay.addEventListener("click", (e) => {
+        if (e.target === historyOverlay) closeHistory();
       });
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && scoreSummaryOverlay && !scoreSummaryOverlay.classList.contains("hidden")) {
           closeScoreSummary();
+        }
+        if (e.key === "Escape" && historyOverlay && !historyOverlay.classList.contains("hidden")) {
+          closeHistory();
         }
       });
 
@@ -1864,17 +2911,19 @@
 
       /* ---------------------- Initial Load ---------------------- */
 
-      applyDeckCountToDefaults();
+      applyGamePreset("long");
+      applyRecommendedRoundLimits(playerCount);
       buildPlayerHeaders();
       buildRoundsBody();
       buildSettingsUI();
       buildRulesUI();
       buildAllHandGrid();
       buildPlayerNameInputs(); // default names
-      updateCardRemovalHint();
+      syncDeckCountFromPlayerInput();
 
       const saved = loadState();
       applyLoadedState(saved);
+      updateCardRemovalHint();
 
       // One more sync after first paint
       setTimeout(syncStickyHeaderWidths, 50);
