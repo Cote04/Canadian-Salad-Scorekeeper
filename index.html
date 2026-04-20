@@ -182,6 +182,48 @@
       padding: 0.18rem 0.3rem;
     }
 
+    .rules-grid-four-col {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto auto auto;
+      gap: 0.35rem 0.75rem;
+      align-items: center;
+      font-size: 0.75rem;
+      margin-top: 0.25rem;
+    }
+
+    .rules-grid-head {
+      color: var(--text-muted);
+      font-size: 0.68rem;
+      padding-bottom: 0.2rem;
+      border-bottom: 1px solid rgba(148,163,184,0.12);
+      margin-bottom: 0.15rem;
+    }
+
+    .rules-grid-head:nth-child(5n+2),
+    .rules-grid-head:nth-child(5n+3),
+    .rules-grid-head:nth-child(5n+4),
+    .rules-grid-head:nth-child(5n+5) {
+      text-align: center;
+    }
+
+    .rule-points-input,
+    .rule-limit-input {
+      width: 3.8rem;
+      text-align: center;
+      padding: 0.18rem 0.3rem;
+      border-radius: 0.6rem;
+      border: 1px solid rgba(148,163,184,0.8);
+      background: #020617;
+      color: var(--text-main);
+      font-size: 0.8rem;
+    }
+
+    .rule-use-cell {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
     .settings-grid {
       display: grid;
       grid-template-columns: 1fr auto;
@@ -942,9 +984,6 @@
             <button id="applyModeBtn" type="button" class="ghost small">Apply Game Mode</button>
           </div>
         </div>
-        <div class="settings-hint">
-          Pick a preset, player count, and deck count here. Apply Game Mode loads the default round order and rules used. You can still customize the order and which rules are active below.
-        </div>
         <p class="hint" id="cardRemovalHint"></p>
       </div>
 
@@ -963,32 +1002,12 @@
       <!-- Rules enabled / disabled subsection -->
       <div class="settings-section">
         <div class="settings-section-title">Rules in this game</div>
-        <div class="settings-grid" id="rulesGrid"></div>
+        <div class="rules-grid-four-col" id="rulesGrid"></div>
         <div class="settings-hint">
-          Set whether each rule is used and what order it appears in. The selected game mode loads the default setup first.
+          Set the round order, card limits, and whether each rule is used. This replaces the separate Deck / Round Limits section.
         </div>
       </div>
 
-      <!-- Deck / Round limits subsection -->
-      <div class="settings-section">
-        <div class="settings-section-title">Deck / Round Limits</div>
-        <div class="controls" style="margin-bottom:0.5rem;">
-          <div class="controls-group">
-            <span style="font-size:0.78rem;color:var(--text-muted);">
-              Defaults assume a 52-card deck. Card limits scale with number of decks.
-            </span>
-          </div>
-          <div class="settings-actions">
-            <button id="restoreDefaultsBtn" type="button" class="ghost small">Restore Defaults</button>
-          </div>
-        </div>
-
-        <div class="settings-grid" id="settingsGrid"></div>
-
-        <div class="settings-hint">
-          Deck count is now controlled in Game Mode. Limits still scale from that deck selection, and you can fine-tune per round here.
-        </div>
-      </div>
 
     </section>
 
@@ -1218,8 +1237,6 @@
       const resetBtn = document.getElementById("resetBtn");
 
       const scoreTable = document.getElementById("scoreTable");
-      const settingsGrid = document.getElementById("settingsGrid");
-      const restoreDefaultsBtn = document.getElementById("restoreDefaultsBtn");
       const deckCountSelect = document.getElementById("deckCount");
       const settingsCardEl = document.getElementById("settingsCard");
       const toggleSettingsBtn = document.getElementById("toggleSettingsBtn");
@@ -1304,14 +1321,12 @@
       function refreshGameLayout(existingNames = null) {
         buildPlayerHeaders();
         buildRoundsBody();
-        buildSettingsUI();
-        buildRulesUI();
+          buildRulesUI();
         buildAllHandGrid();
         buildPlayerNameInputs(existingNames || getCurrentPlayerNamesFromSettings());
         updateCardRemovalHint();
         updateAllHandTotals();
         updateScores();
-        updateSettingsInputsFromRounds();
         saveState();
         syncStickyHeaderWidths();
       }
@@ -1408,7 +1423,15 @@
 
       function applyRecommendedRoundLimits(pc) {
         if (gameMode === "short") {
-          const shortDefaults = { 2: 13, 3: 13, 7: 4, 9: 1, 10: 1 };
+          const shortByPlayerCount = {
+            2: { 2: 13, 3: 13, 7: 4, 9: 1, 10: 1 },
+            3: { 2: 17, 3: 13, 7: 4, 9: 1, 10: 1 },
+            4: { 2: 13, 3: 13, 7: 4, 9: 1, 10: 1 },
+            5: { 2: 10, 3: 13, 7: 4, 9: 1, 10: 1 },
+            6: { 2: 8, 3: 13, 7: 4, 9: 1, 10: 1 }
+          };
+
+          const shortDefaults = shortByPlayerCount[pc] || shortByPlayerCount[4];
           rounds.forEach((round, idx) => {
             if (shortDefaults[idx] != null) {
               round.maxCards = shortDefaults[idx];
@@ -1429,24 +1452,45 @@
         if (!cardRemovalHint) return;
 
         const pc = clampPlayerCount(parseInt(playerCountInput.value || playerCount, 10));
+        const modeLabel = gameMode === "short" ? "Short game" : "Long game";
+        const deckLabel = `${deckCount} deck${deckCount === 1 ? "" : "s"}`;
         let msg = "";
 
+        if (gameMode === "short") {
+          if (pc === 2) {
+            msg = `2 players: ${modeLabel} uses ${deckLabel}. No cards removed. Deal 13 cards each.`;
+          } else if (pc === 3) {
+            msg = `3 players: ${modeLabel} uses ${deckLabel}. Remove the 2♣, then deal 17 cards each.`;
+          } else if (pc === 4) {
+            msg = `4 players: ${modeLabel} uses ${deckLabel}. No cards removed. Deal 13 cards each.`;
+          } else if (pc === 5) {
+            msg = `5 players: ${modeLabel} uses ${deckLabel}. Remove the 2♣ and 2♦, then deal 10 cards each.`;
+          } else if (pc === 6) {
+            msg = `6 players: ${modeLabel} uses ${deckLabel}. Remove the 2♣, 3♣, 2♦, and 3♦, then deal 8 cards each.`;
+          } else {
+            msg = `${pc} players: ${modeLabel} uses ${deckLabel}.`;
+          }
+
+          cardRemovalHint.textContent = msg;
+          return;
+        }
+
         if (pc === 2) {
-          msg = "2 players: use 1 deck. No cards removed. Deal the hand size you prefer for your house rules.";
+          msg = `2 players: ${modeLabel} uses ${deckLabel}. No cards removed. Deal the hand size you prefer for your house rules.`;
         } else if (pc === 3) {
-          msg = "3 players: use 1 deck. Remove all clubs (13 cards) before dealing. Each player gets 13 cards.";
+          msg = `3 players: ${modeLabel} uses ${deckLabel}. Remove all clubs (13 cards) before dealing. Each player gets 13 cards.`;
         } else if (pc === 4) {
-          msg = "4 players: use 1 deck. No cards removed (perfect deal: 13 cards each).";
+          msg = `4 players: ${modeLabel} uses ${deckLabel}. No cards removed (perfect deal: 13 cards each).`;
         } else if (pc === 5) {
-          msg = "5 players: use 1 deck. Remove the 2♣ and 2♦ (2 cards total), then deal 10 cards to each player.";
+          msg = `5 players: ${modeLabel} uses ${deckLabel}. Remove the 2♣ and 2♦ (2 cards total), then deal 10 cards to each player.`;
         } else if (pc === 6) {
-          msg = "6 players: use 2 decks. Remove one full suit of clubs and one full suit of diamonds (26 cards total), then deal 13 cards to each player.";
+          msg = `6 players: ${modeLabel} uses ${deckLabel}. Remove one full suit of clubs and one full suit of diamonds (26 cards total), then deal 13 cards to each player.`;
         } else if (pc === 7) {
-          msg = "7 players: use 2 decks. Remove one full suit of clubs (13 cards), then deal 13 cards to each player.";
+          msg = `7 players: ${modeLabel} uses ${deckLabel}. Remove one full suit of clubs (13 cards), then deal 13 cards to each player.`;
         } else if (pc === 8) {
-          msg = "8 players: use 2 decks. No cards removed (perfect deal: 13 cards each).";
+          msg = `8 players: ${modeLabel} uses ${deckLabel}. No cards removed (perfect deal: 13 cards each).`;
         } else {
-          msg = "No specific card-removal rule for this player count. Use any deck setup you like.";
+          msg = `${pc} players: ${modeLabel} uses ${deckLabel}.`;
         }
 
         cardRemovalHint.textContent = msg;
@@ -1455,9 +1499,13 @@
       function syncDeckCountFromPlayerInput() {
         const pc = clampPlayerCount(parseInt(playerCountInput.value, 10));
         if (playerCountInput.value !== String(pc)) playerCountInput.value = String(pc);
-        const recommendedDeckCount = getRecommendedDeckCount(pc);
+
+        const recommendedDeckCount = gameMode === "short" ? 1 : getRecommendedDeckCount(pc);
         deckCount = recommendedDeckCount;
-        if (deckCountSelect) deckCountSelect.value = String(recommendedDeckCount);
+        if (deckCountSelect) {
+          deckCountSelect.value = String(recommendedDeckCount);
+          deckCountSelect.disabled = gameMode === "short";
+        }
         updateCardRemovalHint();
       }
 
@@ -1467,22 +1515,27 @@
         if (!rulesGrid) return;
         rulesGrid.innerHTML = "";
 
+        const headers = ["Round Name", "Order", "Points", "Card Limits", "Use"];
+        headers.forEach((label) => {
+          const head = document.createElement("div");
+          head.className = "rules-grid-head";
+          head.textContent = label;
+          rulesGrid.appendChild(head);
+        });
+
         const scoringRuleEntries = Array.from({ length: rounds.length - 1 }, (_, idx) => ({
           idx,
           round: rounds[idx],
           order: roundOrder[idx] || idx + 1
         })).sort((a, b) => a.order - b.order || a.idx - b.idx);
 
-        scoringRuleEntries.forEach((entry, listIndex) => {
+        scoringRuleEntries.forEach((entry) => {
           const idx = entry.idx;
           const round = entry.round;
 
           const labelDiv = document.createElement("div");
           labelDiv.className = "settings-round-label";
-          labelDiv.innerHTML = `<span>${listIndex + 1}. ${round.name}</span>`;
-
-          const wrapper = document.createElement("div");
-          wrapper.className = "rule-config-controls";
+          labelDiv.innerHTML = `<span>${round.name}</span>`;
 
           const orderInput = document.createElement("input");
           orderInput.type = "number";
@@ -1491,7 +1544,6 @@
           orderInput.value = String(roundOrder[idx] || idx + 1);
           orderInput.className = "rule-order-input";
           orderInput.title = "Display order";
-
           orderInput.addEventListener("change", () => {
             let desired = parseInt(orderInput.value || String(idx + 1), 10);
             if (isNaN(desired) || desired < 1) desired = 1;
@@ -1516,21 +1568,55 @@
             syncStickyHeaderWidths();
           });
 
-          const orderLabel = document.createElement("label");
-          orderLabel.innerHTML = `Order`;
-          orderLabel.appendChild(orderInput);
+          const pointsInput = document.createElement("input");
+          pointsInput.type = "number";
+          pointsInput.min = "0";
+          pointsInput.step = "1";
+          pointsInput.value = round.pointsPerCard != null ? String(round.pointsPerCard) : "0";
+          pointsInput.className = "rule-points-input";
+          pointsInput.title = "Points per card/event";
+          pointsInput.addEventListener("input", () => {
+            let val = parseInt(pointsInput.value || "0", 10);
+            if (isNaN(val) || val < 0) val = 0;
+            round.pointsPerCard = val;
+            pointsInput.value = String(val);
 
+            updateAllHandTotals();
+            updateScores();
+            saveState();
+            syncStickyHeaderWidths();
+          });
+
+          const limitInput = document.createElement("input");
+          limitInput.type = "number";
+          limitInput.min = "0";
+          limitInput.step = "1";
+          limitInput.value = round.maxCards != null ? String(round.maxCards) : "0";
+          limitInput.className = "rule-limit-input";
+          limitInput.title = "Card limit";
+          limitInput.addEventListener("input", () => {
+            let val = parseInt(limitInput.value || "0", 10);
+            if (isNaN(val) || val < 0) val = 0;
+            round.maxCards = val;
+            limitInput.value = String(val);
+
+            enforceAllRoundLimits(idx);
+            enforceAllHandLimitsForRule(idx);
+            updateAllHandTotals();
+            updateScores();
+            saveState();
+            syncStickyHeaderWidths();
+          });
+
+          const useCell = document.createElement("div");
+          useCell.className = "rule-use-cell";
           const checkbox = document.createElement("input");
           checkbox.type = "checkbox";
           checkbox.dataset.ruleToggle = String(idx);
           checkbox.checked = includedRules[idx];
-
-          const useLabel = document.createElement("label");
-          useLabel.innerHTML = `Use`;
-          useLabel.prepend(checkbox);
-
           checkbox.addEventListener("change", () => {
             includedRules[idx] = checkbox.checked;
+            buildRulesUI();
             buildRoundsBody();
             buildAllHandGrid();
             updateAllHandTotals();
@@ -1538,12 +1624,13 @@
             saveState();
             syncStickyHeaderWidths();
           });
-
-          wrapper.appendChild(orderLabel);
-          wrapper.appendChild(useLabel);
+          useCell.appendChild(checkbox);
 
           rulesGrid.appendChild(labelDiv);
-          rulesGrid.appendChild(wrapper);
+          rulesGrid.appendChild(orderInput);
+          rulesGrid.appendChild(pointsInput);
+          rulesGrid.appendChild(limitInput);
+          rulesGrid.appendChild(useCell);
         });
       }
 
@@ -1624,11 +1711,15 @@
         playerCount = state.playerCount || 4;
         playerCountInput.value = playerCount;
         if (gameModeSelect) gameModeSelect.value = gameMode;
+        deckCount = gameMode === "short" ? 1 : getRecommendedDeckCount(playerCount);
+        if (deckCountSelect) {
+          deckCountSelect.value = String(deckCount);
+          deckCountSelect.disabled = gameMode === "short";
+        }
 
         buildPlayerHeaders();
         buildRoundsBody();
-        buildSettingsUI();
-        buildRulesUI();
+          buildRulesUI();
         buildAllHandGrid();
         buildPlayerNameInputs(state.players || []);
         updateCardRemovalHint();
@@ -1652,7 +1743,6 @@
 
         updateAllHandTotals();
         updateScores();
-        updateSettingsInputsFromRounds();
 
         syncStickyHeaderWidths();
       }
@@ -1669,13 +1759,10 @@
 
       function restoreDefaults() {
         applyGamePreset(gameMode);
-        if (gameMode === "long") {
-          applyRecommendedRoundLimits(playerCount);
-        } else {
-          applyRecommendedRoundLimits(playerCount);
-        }
-        updateSettingsInputsFromRounds();
+        applyRecommendedRoundLimits(playerCount);
         buildRulesUI();
+        buildRoundsBody();
+        buildAllHandGrid();
         enforceAllRoundLimits();
         enforceAllHandLimitsForAll();
         updateAllHandTotals();
@@ -1685,52 +1772,6 @@
       }
 
       /* ---------------------- Settings UI ---------------------- */
-
-      function buildSettingsUI() {
-        settingsGrid.innerHTML = "";
-
-        rounds.forEach((round, idx) => {
-          if (round.defaultMaxCards == null && round.maxCards == null) return;
-
-          const labelDiv = document.createElement("div");
-          labelDiv.className = "settings-round-label";
-          labelDiv.innerHTML = `<span>${idx + 1}. ${round.name}</span>`;
-
-          const input = document.createElement("input");
-          input.type = "number";
-          input.min = "0";
-          input.step = "1";
-          input.dataset.roundSettings = String(idx);
-          input.value = round.maxCards != null ? round.maxCards : 0;
-
-          input.addEventListener("input", () => {
-            let val = parseInt(input.value || "0", 10);
-            if (isNaN(val) || val < 0) val = 0;
-            round.maxCards = val;
-            input.value = String(val);
-
-            enforceAllRoundLimits(idx);
-            enforceAllHandLimitsForRule(idx);
-            updateAllHandTotals();
-            updateScores();
-            saveState();
-            syncStickyHeaderWidths();
-          });
-
-          settingsGrid.appendChild(labelDiv);
-          settingsGrid.appendChild(input);
-        });
-      }
-
-      function updateSettingsInputsFromRounds() {
-        const inputs = settingsGrid.querySelectorAll("input[type='number'][data-round-settings]");
-        inputs.forEach((input) => {
-          const idx = parseInt(input.dataset.roundSettings, 10);
-          const round = rounds[idx];
-          if (!round) return;
-          if (round.maxCards != null) input.value = round.maxCards;
-        });
-      }
 
       /* ---------------------- UI Building ---------------------- */
 
@@ -2782,10 +2823,6 @@
 
       resetBtn.addEventListener("click", resetScores);
 
-      restoreDefaultsBtn.addEventListener("click", () => {
-        restoreDefaults();
-      });
-
       deckCountSelect.addEventListener("change", () => {
         const dc = parseInt(deckCountSelect.value, 10);
         deckCount = !isNaN(dc) && dc >= 1 ? dc : 1;
@@ -2795,7 +2832,6 @@
         } else {
           applyRecommendedRoundLimits(playerCount);
         }
-        updateSettingsInputsFromRounds();
         enforceAllRoundLimits();
         enforceAllHandLimitsForAll();
         updateAllHandTotals();
@@ -2809,6 +2845,11 @@
         syncDeckCountFromPlayerInput();
       });
 
+      gameModeSelect.addEventListener("change", () => {
+        gameMode = gameModeSelect.value || "long";
+        syncDeckCountFromPlayerInput();
+      });
+
       applyModeBtn.addEventListener("click", () => {
         const desired = clampPlayerCount(parseInt(playerCountInput.value, 10));
         const existingNames = getCurrentPlayerNamesFromSettings();
@@ -2818,24 +2859,14 @@
         applyGamePreset(gameModeSelect.value || "long");
         normalizeRoundOrder();
 
-        const selectedDeckCount = parseInt(deckCountSelect.value, 10);
-        if (gameMode === "long") {
-          deckCount = !isNaN(selectedDeckCount) && selectedDeckCount >= 1
-            ? selectedDeckCount
-            : getRecommendedDeckCount(playerCount);
-          deckCountSelect.value = String(deckCount);
-        } else {
-          deckCount = !isNaN(selectedDeckCount) && selectedDeckCount >= 1
-            ? selectedDeckCount
-            : 1;
-          deckCountSelect.value = String(deckCount);
-        }
+        deckCount = gameMode === "short" ? 1 : getRecommendedDeckCount(playerCount);
+        deckCountSelect.value = String(deckCount);
+        deckCountSelect.disabled = gameMode === "short";
 
         applyRecommendedRoundLimits(playerCount);
         buildPlayerHeaders();
         buildRoundsBody();
-        buildSettingsUI();
-        buildRulesUI();
+          buildRulesUI();
         buildAllHandGrid();
         buildPlayerNameInputs(existingNames);
         updateCardRemovalHint();
@@ -2915,7 +2946,6 @@
       applyRecommendedRoundLimits(playerCount);
       buildPlayerHeaders();
       buildRoundsBody();
-      buildSettingsUI();
       buildRulesUI();
       buildAllHandGrid();
       buildPlayerNameInputs(); // default names
